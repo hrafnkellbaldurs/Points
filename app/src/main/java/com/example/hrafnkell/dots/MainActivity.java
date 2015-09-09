@@ -37,8 +37,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * If the Timed button is pressed, we go to that activity
+     * @param view The current view
+     */
     public void onTimedClick(View view){
         Intent intent = new Intent(this, TimedActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * If the High Score button is pressed, we go to that activity
+     * @param view The current view
+     */
+    public void onHighScoreClick(View view){
+        Intent intent = new Intent(this, HighScoreActivity.class);
         startActivity(intent);
     }
 }

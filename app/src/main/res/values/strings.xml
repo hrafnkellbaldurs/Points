@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Dots</string>
+
+    <string name="timed_btn">Timed</string>
+    <string name="high_score">High Score</string>
+    <string name="action_settings">Settings</string>
+</resources>

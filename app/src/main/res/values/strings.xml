@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Dots</string>
 
-    <string name="timed_btn">Timed</string>
+    <string name="play_btn">Play</string>
     <string name="high_score">High Score</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_timed">TimedActivity</string>
+    <string name="title_activity_play">PlayActivity</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_high_score">HighScoreActivity</string>

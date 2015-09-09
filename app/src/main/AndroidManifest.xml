@@ -17,8 +17,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TimedActivity"
-            android:label="@string/title_activity_timed"
+            android:name=".PlayActivity"
+            android:label="@string/title_activity_play"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

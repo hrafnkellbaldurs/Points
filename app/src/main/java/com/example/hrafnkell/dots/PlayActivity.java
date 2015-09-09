@@ -1,23 +1,22 @@
 package com.example.hrafnkell.dots;
 
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class TimedActivity extends Activity {
+public class PlayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timed);
+        setContentView(R.layout.activity_play);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_timed, menu);
+        getMenuInflater().inflate(R.menu.menu_play, menu);
         return true;
     }
 

@@ -23,9 +23,12 @@ public class BoardView extends View {
     private Paint m_paint = new Paint();
     private int m_cell_width;
     private int m_cell_height;
+    private int m_grid_circle_size = 25;
 
     private RectF m_circle = new RectF();
     private Paint m_paintCircle = new Paint();
+    private RectF m_grid_circle = new RectF();
+    private Paint m_grid_paintCircle = new Paint();
     private Path m_path = new Path();
     private  Paint m_paintPath = new Paint();
 
@@ -41,6 +44,10 @@ public class BoardView extends View {
         m_paintCircle.setColor(Color.RED);
         m_paintCircle.setStyle(Paint.Style.FILL_AND_STROKE);
         m_paintCircle.setAntiAlias(true);
+
+        m_grid_paintCircle.setColor(Color.GREEN);
+        m_grid_paintCircle.setStyle(Paint.Style.FILL_AND_STROKE);
+        m_grid_paintCircle.setAntiAlias(true);
 
         m_paintPath.setColor(Color.BLACK);
         m_paintPath.setStyle(Paint.Style.STROKE);
@@ -75,6 +82,20 @@ public class BoardView extends View {
 
     }
 
+    protected  void setDotCenter(int x, int y){
+
+        int centerX = x + (m_cell_width/2);
+        int centerY = y + (m_cell_height/2);
+
+        int beginX = centerX - m_grid_circle_size;
+        int beginY = centerY - m_grid_circle_size;
+        int endX = centerX + m_grid_circle_size;
+        int endY = centerY + m_grid_circle_size;
+
+
+        m_grid_circle.set(beginX, beginY, endX, endY);
+    }
+
     @Override
     protected void onDraw(Canvas canvas ) {
         canvas.drawRect(m_rect, m_paint);
@@ -84,9 +105,13 @@ public class BoardView extends View {
             for(int col = 0; col < NUM_CELLS; ++col){
                 int x = col * m_cell_width;
                 int y = row * m_cell_height;
-                m_rect.set( x, y, x + m_cell_width, y + m_cell_height);
-                m_rect.offset( getPaddingLeft(), getPaddingTop());
-                canvas.drawRect( m_rect, m_paint );
+                //m_rect.set(x, y, x + m_cell_width, y + m_cell_height);
+                //m_rect.offset(getPaddingLeft(), getPaddingTop());
+                //canvas.drawRect(m_rect, m_paint);
+                setDotCenter(x,y);
+                m_grid_circle.offset(getPaddingLeft(), getPaddingTop());
+                canvas.drawOval(m_grid_circle, m_grid_paintCircle);
+
             }
         }
         if( !m_cellPath.isEmpty() ){
@@ -99,7 +124,7 @@ public class BoardView extends View {
             }
             canvas.drawPath( m_path, m_paintPath);
         }
-        canvas.drawOval(m_circle, m_paintCircle);
+        //canvas.drawOval(m_circle, m_paintCircle);
     }
 
     boolean m_moving = false;

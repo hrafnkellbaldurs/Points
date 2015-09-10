@@ -81,10 +81,10 @@ public class BoardView extends View {
             m_dots = new ArrayList<>();
 
             // Initializing array with ArrayLists
-            for (int col = 0; col < NUM_CELLS; col++) {
+            for (int row = 0; row < NUM_CELLS; row++) {
                 m_dots.add(new ArrayList<Dot>());
-                ArrayList colList = m_dots.get(col);
-                for(int row = 0; row < NUM_CELLS; row++){
+                ArrayList colList = m_dots.get(row);
+                for(int col = 0; col < NUM_CELLS; col++){
                     int x = (col * m_cell_width) + (m_cell_width/2);
                     int y = (row * m_cell_height) + (m_cell_height/2);
                     float size = m_cell_height / 5;
@@ -171,30 +171,25 @@ public class BoardView extends View {
         int x = (int) event.getX();
         int y = (int) event.getY();
 
-        int xMax = getPaddingLeft() + m_cell_width * NUM_CELLS;
-        int yMax = getPaddingBottom() + m_cell_height * NUM_CELLS;
-        x = Math.max( getPaddingLeft(), Math.min( x, (int)(xMax - m_circle.width())));
-        y = Math.max( getPaddingTop(), Math.min( y, (int)(yMax - m_circle.height())));
-
         if(x < getPaddingLeft() || y < getPaddingTop()){
-            return true;
-        }
-        if( x +  m_circle.width() > xMax){
-            return true;
-        }
-        if(y + m_circle.height() > yMax){
             return true;
         }
 
         if( event.getAction() == MotionEvent.ACTION_DOWN){
             //m_circle.offsetTo( x - m_circle.width() / 2, y - m_circle.height() / 2 );
-                if( m_circle.contains(x,y)){
-                    m_moving = true;
-                    m_cellPath.add( new Point(xToCol(x), yToRow(y)));
+
+            // check each dot if your finger is in it
+            for(ArrayList<Dot> row : m_dots){
+                ArrayList<Dot> col = m_dots.get(m_dots.indexOf(row));
+                for(Dot dot : col){
+
+                    if(dot.getRectf().contains(x,y)){
+                        m_moving = true;
+                        m_cellPath.add(new Point(xToCol(x), yToRow(y)));
+                        m_paintPath.setColor(dot.getPaint().getColor());
+                        //dot.getPaint().setColor(Color.BLACK);
+                    }
                 }
-            else {
-                animateMovement(m_circle.left, m_circle.top,
-                        x - m_circle.width() / 2, y - m_circle.height() / 2);
             }
             invalidate();
         }
@@ -210,13 +205,13 @@ public class BoardView extends View {
                         //Toast.makeText(getContext(), "New coordinate added....", Toast.LENGTH_SHORT ).show();
                     }
                 }
-                m_circle.offsetTo(x, y);
+                //m_circle.offsetTo(x, y);
                 invalidate();
             }
         }
         else if( event.getAction() == MotionEvent.ACTION_UP){
             m_moving = false;
-            snapToGrid(m_circle);
+            //snapToGrid(m_circle);
             m_cellPath.clear();
             invalidate();
         }

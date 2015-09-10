@@ -1,5 +1,6 @@
 package com.example.hrafnkell.dots;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +18,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HighScoreActivity extends AppCompatActivity {
+public class HighScoreActivity extends Activity {
 
     private ListView m_listView;
 

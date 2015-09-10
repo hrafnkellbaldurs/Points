@@ -23,7 +23,7 @@ public class BoardView extends View {
     private Paint m_paint = new Paint();
     private int m_cell_width;
     private int m_cell_height;
-    private int m_grid_circle_size = 25;
+    private int m_grid_circle_size;
 
     private RectF m_circle = new RectF();
     private Paint m_paintCircle = new Paint();
@@ -36,6 +36,7 @@ public class BoardView extends View {
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         m_paint.setColor(Color.BLACK);
         m_paint.setStyle(Paint.Style.STROKE);
         m_paint.setStrokeWidth(2);
@@ -74,6 +75,7 @@ public class BoardView extends View {
         int   boardHeight = (yNew - getPaddingTop() - getPaddingBottom());
         m_cell_width = boardWidth / NUM_CELLS;
         m_cell_height = boardHeight / NUM_CELLS;
+        m_grid_circle_size = m_cell_height / 5;
         m_circle.set(0, 0, m_cell_width, m_cell_height);
         m_circle.offset(getPaddingLeft(), getPaddingTop());
         m_circle.inset(m_cell_width * 0.1f, m_cell_height * 0.1f);
@@ -105,9 +107,9 @@ public class BoardView extends View {
             for(int col = 0; col < NUM_CELLS; ++col){
                 int x = col * m_cell_width;
                 int y = row * m_cell_height;
-                //m_rect.set(x, y, x + m_cell_width, y + m_cell_height);
-                //m_rect.offset(getPaddingLeft(), getPaddingTop());
-                //canvas.drawRect(m_rect, m_paint);
+                m_rect.set(x, y, x + m_cell_width, y + m_cell_height);
+                m_rect.offset(getPaddingLeft(), getPaddingTop());
+                canvas.drawRect(m_rect, m_paint);
                 setDotCenter(x,y);
                 m_grid_circle.offset(getPaddingLeft(), getPaddingTop());
                 canvas.drawOval(m_grid_circle, m_grid_paintCircle);
@@ -199,7 +201,7 @@ public class BoardView extends View {
                     Point last = m_cellPath.get(m_cellPath.size()-1);
                     if( col != last.x || row != last.y){
                         m_cellPath.add( new Point(col, row));
-                        Toast.makeText(getContext(), "New coordinate added....", Toast.LENGTH_SHORT ).show();
+                        //Toast.makeText(getContext(), "New coordinate added....", Toast.LENGTH_SHORT ).show();
                     }
                 }
                 m_circle.offsetTo(x, y);

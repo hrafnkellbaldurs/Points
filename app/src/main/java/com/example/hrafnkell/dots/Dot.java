@@ -14,7 +14,7 @@ public class Dot {
     // Center x and y coordinates
     private int x, y;
 
-    private int xGrid, yGrid;
+    private int col, row;
 
 
     // Coordinates to make the touch area for the dot
@@ -33,15 +33,17 @@ public class Dot {
 
     // The color of the dot
     private int color;
+    public int colorIndex;
 
-    public Dot(int x,int y, int xGrid, int yGrid, float touchArea, float dotDrawSize, int color){
+    public Dot(int x,int y, int col, int row, float touchArea, float dotDrawSize, int color, int colorIndex){
         this.x = x;
         this.y = y;
-        this.xGrid = xGrid;
-        this.yGrid = yGrid;
+        this.col = col;
+        this.row = row;
         this.touchArea = touchArea;
         this.dotDrawSize = dotDrawSize;
         this.color = color;
+        this.colorIndex = colorIndex;
         this.touchAreaRectf = new RectF(x - touchArea, y - touchArea, x + touchArea, y + touchArea );
         this.dotDrawRectf = new RectF(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize );
         this.paint = new Paint();
@@ -49,7 +51,6 @@ public class Dot {
         this.paint.setColor(color);
         this.paint.setStyle(Paint.Style.FILL_AND_STROKE);
         this.paint.setAntiAlias(true);
-        //super.set(xBegin, yBegin, xEnd, yEnd);
     }
 
 
@@ -81,20 +82,20 @@ public class Dot {
         return this.y;
     }
 
-    public void setXGrid(int x){
-        this.xGrid = x;
+    public void setCol(int col){
+        this.col = col;
     }
 
-    public void setYGrid(int y){
-        this.yGrid = y;
+    public void setRow(int row){
+        this.row = row;
     }
 
-    public int getXGrid(){
-        return this.xGrid;
+    public int getCol(){
+        return this.col;
     }
 
-    public int getyGrid(){
-        return this.yGrid;
+    public int getRow(){
+        return this.row;
     }
 
     public void setTouchSize(float size){

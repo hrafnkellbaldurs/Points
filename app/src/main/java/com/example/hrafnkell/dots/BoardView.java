@@ -93,17 +93,17 @@ public class BoardView extends View {
         if(m_dots == null){
             m_dots = new ArrayList<>();
             // Initializing array with ArrayLists
-            for (int row = 0; row < NUM_DOTS; row++) {
+            for (int col = 0; col < NUM_DOTS; col++) {
                 m_dots.add(new ArrayList<Dot>());
-                ArrayList colList = m_dots.get(row);
-                for(int col = 0; col < NUM_DOTS; col++){
-                    int x = (col * m_cell_width) + (m_cell_width/2);
-                    int y = (row * m_cell_height) + (m_cell_height/2);
+                ArrayList colList = m_dots.get(col);
+                for(int row = 0; row < NUM_DOTS; row++){
+                    int y = (row * m_cell_width) + (m_cell_width/2);
+                    int x = (col * m_cell_height) + (m_cell_height/2);
                     float touchArea = m_cell_height / TOUCH_AREA;
                     float dotDrawSize = m_cell_height / DOT_DRAW_SIZE;
                     int randColor = getRandomColor();
 
-                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), col, row, touchArea, dotDrawSize, randColor, colorIndex));
+                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), row, col, touchArea, dotDrawSize, randColor, colorIndex));
                 }
             }
         }
@@ -159,7 +159,7 @@ public class BoardView extends View {
 
         if( event.getAction() == MotionEvent.ACTION_DOWN){
 
-            // check each dot if your finger is in it
+            // Check each dot if your finger is in it
             for(ArrayList<Dot> row : m_dots){
                 ArrayList<Dot> col = m_dots.get(m_dots.indexOf(row));
                 for(Dot dot : col){
@@ -181,14 +181,18 @@ public class BoardView extends View {
                 if(!m_cellPath.isEmpty()){
                     int col = xToCol(x);
                     int row = yToRow(y);
-                    Dot dot = m_dots.get(row).get(col);
-                    Dot lastDot = m_dotsTouched.get(m_dotsTouched.size() - 1);
+                    Dot dot = m_dots.get(col).get(row);
+
                     Point lastPoint = m_cellPath.get(m_cellPath.size() - 1);
-                    int lastDotColor = lastDot.getPaint().getColor();
-                    int dotColor = dot.getPaint().getColor();
-                    if((col != lastPoint.x || row != lastPoint.y) && (lastDotColor == dotColor)){
-                        m_cellPath.add(new Point(col, row));
-                        m_dotsTouched.add(dot);
+                    if((col != lastPoint.x || row != lastPoint.y))
+                    {
+                        boolean colorMatchesLast = lastDotColorMatches(dot);
+                        boolean dotWithinReach = dotWithinReach(dot);
+
+                        if(colorMatchesLast && dotWithinReach){
+                            m_cellPath.add(new Point(col, row));
+                            m_dotsTouched.add(dot);
+                        }
                     }
                 }
                 invalidate();
@@ -201,6 +205,33 @@ public class BoardView extends View {
             invalidate();
         }
         return true;
+    }
+
+    public boolean lastDotColorMatches(Dot dot){
+        Dot lastDot = m_dotsTouched.get(m_dotsTouched.size() - 1);
+        int lastDotColor = lastDot.getPaint().getColor();
+        int dotColor = dot.getPaint().getColor();
+        return lastDotColor == dotColor;
+    }
+
+    public boolean dotWithinReach(Dot dot){
+        Dot lastDot = m_dotsTouched.get(m_dotsTouched.size() - 1);
+
+        int lastDotCol = lastDot.getCol();
+        int lastDotRow = lastDot.getRow();
+        int dotCol = dot.getCol();
+        int dotRow = dot.getRow();
+
+        int up = lastDotRow - 1;
+        int down = lastDotRow + 1;
+        int right = lastDotCol + 1;
+        int left = lastDotCol - 1;
+
+        if(dotCol == left && dotRow == lastDotRow) return true;
+        if(dotCol == right && dotRow == lastDotRow) return true;
+        if(dotCol == lastDotCol && dotRow == up) return true;
+        if(dotCol == lastDotCol && dotRow == down) return true;
+        return false;
     }
 
     public void drawDots(Canvas canvas){

@@ -35,7 +35,7 @@ public class Dot {
     private int color;
     public int colorIndex;
 
-    public Dot(int x,int y, int col, int row, float touchArea, float dotDrawSize, int color, int colorIndex){
+    public Dot(int x,int y, int row, int col, float touchArea, float dotDrawSize, int color, int colorIndex){
         this.x = x;
         this.y = y;
         this.col = col;

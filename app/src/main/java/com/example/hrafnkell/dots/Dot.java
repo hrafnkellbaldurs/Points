@@ -1,12 +1,8 @@
 package com.example.hrafnkell.dots;
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
+
 
 /**
  * Created by Hrafnkell on 10/9/2015.
@@ -20,24 +16,34 @@ public class Dot {
 
     private int xGrid, yGrid;
 
-    // Coordinates to draw the circle
-    private RectF rectf;
+
+    // Coordinates to make the touch area for the dot
+    private RectF touchAreaRectf;
+
+    // Coordinates to draw the dot
+    private RectF dotDrawRectf;
+
+    // Paint object for the dot to actually draw it
     private Paint paint;
 
-    // Radius = size / 2
-    private float size;
+    // The area that the user can touch to activate the dot
+    private float touchArea;
+    // The drawn graphic size for the dot
+    private float dotDrawSize;
 
     // The color of the dot
     private int color;
 
-    public Dot(int x,int y, int xGrid, int yGrid, float size, int color){
+    public Dot(int x,int y, int xGrid, int yGrid, float touchArea, float dotDrawSize, int color){
         this.x = x;
         this.y = y;
         this.xGrid = xGrid;
         this.yGrid = yGrid;
-        this.size = size;
+        this.touchArea = touchArea;
+        this.dotDrawSize = dotDrawSize;
         this.color = color;
-        this.rectf = new RectF(x - size, y - size, x + size, y + size );
+        this.touchAreaRectf = new RectF(x - touchArea, y - touchArea, x + touchArea, y + touchArea );
+        this.dotDrawRectf = new RectF(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize );
         this.paint = new Paint();
         //this.paint.setColor(this.color.hashCode());
         this.paint.setColor(color);
@@ -49,14 +55,14 @@ public class Dot {
 
     public void setX(int x){
         this.x = x;
-        this.rectf.set(x-size, y-size, x+size, y+size);
-        //super.set(xBegin, yBegin, xEnd, yEnd);
+        this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
+        this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
     }
 
     public void setY(int y){
         this.y = y;
-        this.rectf.set(x-size, y-size, x+size, y+size);
-        //super.set(xBegin, yBegin, xEnd, yEnd);
+        this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
+        this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
     }
 
     public void setColor(int color){
@@ -91,20 +97,38 @@ public class Dot {
         return this.yGrid;
     }
 
-    public void setSize(float size){
-        this.size = size;
+    public void setTouchSize(float size){
+        this.touchArea = size;
+        this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
     }
 
-    public float getSize(){
-        return this.size;
+    public float getTouchSize(){
+        return this.touchArea;
     }
 
-    public RectF getRectf(){
-        return this.rectf;
+    public RectF getTouchAreaRectf(){
+        return this.touchAreaRectf;
     }
 
-    public void setRectf(float f1, float f2, float f3, float f4){
-        this.rectf.set(f1,f2,f3,f4);
+    public void setTouchAreaRectf(float f1, float f2, float f3, float f4){
+        this.touchAreaRectf.set(f1,f2,f3,f4);
+    }
+
+    public void setDotSize(float size){
+        this.dotDrawSize = size;
+        this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
+    }
+
+    public float getDotDrawSize(){
+        return this.dotDrawSize;
+    }
+
+    public RectF getDotDrawRectf(){
+        return this.dotDrawRectf;
+    }
+
+    public void setDotDrawRectf(float f1, float f2, float f3, float f4){
+        this.dotDrawRectf.set(f1, f2, f3, f4);
     }
 
     public Paint getPaint(){

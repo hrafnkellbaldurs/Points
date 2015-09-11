@@ -25,6 +25,7 @@ public class BoardView extends View {
     private int [] dotColors = {Color.rgb(126, 84, 124), Color.rgb(97, 187, 213),
             Color.rgb(218, 99, 65), Color.rgb(131, 174, 82), Color.rgb(244, 192, 57)};
 
+
     private Rect m_rect = new Rect();
     private Paint m_paint = new Paint();
     private int m_cell_width;
@@ -36,6 +37,10 @@ public class BoardView extends View {
     private  Paint m_paintPath = new Paint();
 
     private final int NUM_CELLS = 6;
+
+    // A lower number equals a bigger dot
+    private final float TOUCH_AREA = 2.0f;
+    private final float DOT_DRAW_SIZE = 5.0f;
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -87,10 +92,11 @@ public class BoardView extends View {
                 for(int col = 0; col < NUM_CELLS; col++){
                     int x = (col * m_cell_width) + (m_cell_width/2);
                     int y = (row * m_cell_height) + (m_cell_height/2);
-                    float size = m_cell_height / 5;
+                    float touchArea = m_cell_height / TOUCH_AREA;
+                    float dotDrawSize = m_cell_height / DOT_DRAW_SIZE;
                     int randColor = getRandomColor();
 
-                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), col, row, size, randColor));
+                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), col, row, touchArea, dotDrawSize, randColor));
                 }
             }
         }
@@ -99,7 +105,8 @@ public class BoardView extends View {
                 //m_grid_circle_size = m_cell_height / 5; // TODO: Make for loop
                 for (ArrayList<Dot> lst : m_dots) {
                     for (Dot dot : m_dots.get(m_dots.indexOf(lst))) {
-                        dot.setSize(m_cell_height / 5);
+                        dot.setDotSize(m_cell_height / DOT_DRAW_SIZE);
+                        dot.setTouchSize(m_cell_height / TOUCH_AREA);
                     }
                 }
         }
@@ -183,7 +190,7 @@ public class BoardView extends View {
                 ArrayList<Dot> col = m_dots.get(m_dots.indexOf(row));
                 for(Dot dot : col){
 
-                    if(dot.getRectf().contains(x,y)){
+                    if(dot.getTouchAreaRectf().contains(x,y)){
                         m_moving = true;
                         m_cellPath.add(new Point(xToCol(x), yToRow(y)));
                         m_paintPath.setColor(dot.getPaint().getColor());
@@ -242,7 +249,7 @@ public class BoardView extends View {
         for(ArrayList<Dot> row : m_dots){
             ArrayList<Dot> col = m_dots.get(m_dots.indexOf(row));
             for(Dot dot : col){
-                canvas.drawOval(dot.getRectf(), dot.getPaint());
+                canvas.drawOval(dot.getDotDrawRectf(), dot.getPaint());
             }
         }
     }
@@ -273,6 +280,7 @@ public class BoardView extends View {
                 //Draw circle
                 //setDotCenter(x,y);
                 //m_grid_circle.offset(getPaddingLeft(), getPaddingTop())
+                //canvas.drawOval(m_circle, m_circle_paint)
             }
         }
     }

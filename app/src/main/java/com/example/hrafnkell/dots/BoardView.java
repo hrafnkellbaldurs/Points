@@ -4,15 +4,20 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Shader;
+import android.os.Bundle;
 import android.os.Debug;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,6 +25,8 @@ import java.util.List;
 import java.util.Random;
 
 public class BoardView extends View {
+
+    Bundle bundle = new Bundle();
 
     /* Constants */
     // The number of rows and columns of dots
@@ -32,6 +39,9 @@ public class BoardView extends View {
     private final int [] DOT_COLORS = {Color.rgb(126, 84, 124), Color.rgb(97, 187, 213),
             Color.rgb(218, 99, 65), Color.rgb(131, 174, 82), Color.rgb(244, 192, 57)};
     /* End of constants */
+
+    private int score;
+    private TextView scoreView;
 
     private int colorIndex;
 
@@ -72,6 +82,9 @@ public class BoardView extends View {
         m_paintPath.setStrokeWidth(10.0f);
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
         m_paintPath.setAntiAlias(true);
+
+        score = 0;
+        
     }
 
     // Returns a random color from the DOT_COLORS array
@@ -109,7 +122,6 @@ public class BoardView extends View {
         }
 
         if(m_dots != null || !m_dots.isEmpty()){
-                //m_grid_circle_size = m_cell_height / 5; // TODO: Make for loop
                 for (ArrayList<Dot> lst : m_dots) {
                     for (Dot dot : m_dots.get(m_dots.indexOf(lst))) {
                         dot.setDotSize(m_cell_height / DOT_DRAW_SIZE);
@@ -142,6 +154,8 @@ public class BoardView extends View {
             drawPath(canvas);
         }
 
+        //scoreView.setText(String.valueOf(score));
+
         /* Erase comment for the grid to be drawn */
         //drawGrid(canvas);
     }
@@ -160,16 +174,13 @@ public class BoardView extends View {
         if( event.getAction() == MotionEvent.ACTION_DOWN){
 
             // Check each dot if your finger is in it
-            for(ArrayList<Dot> row : m_dots){
-                ArrayList<Dot> col = m_dots.get(m_dots.indexOf(row));
+            for(ArrayList<Dot> col : m_dots){
                 for(Dot dot : col){
-
                     if(dot.getTouchAreaRectf().contains(x,y)){
                         m_moving = true;
                         m_cellPath.add(new Point(dot.getCol(), dot.getRow()));
                         m_dotsTouched.add(dot);
                         m_paintPath.setColor(dot.getPaint().getColor());
-
                         //dot.getPaint().setColor(Color.BLACK);
                     }
                 }
@@ -200,6 +211,44 @@ public class BoardView extends View {
         }
         else if( event.getAction() == MotionEvent.ACTION_UP){
             m_moving = false;
+
+            score += m_dotsTouched.size();
+
+            // TODO: FIX THIS, ITS NOT WORKING
+            if (m_dotsTouched.size() > 1) {
+                int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
+                while(!m_dotsTouched.isEmpty()){
+                    Dot dot = m_dotsTouched.remove(0);
+                    int col = dot.getCol();
+                    int row = dot.getRow();
+                    Dot newDot = getDotAbove(dot);
+                    m_dots.get(col).set(row, newDot);
+                    //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
+                    //m_dots.get(col).set(row, null);
+                }
+
+                for(ArrayList<Dot> col : m_dots){
+                    for(Dot dot : col){
+                        int dotRow = col.indexOf(dot);
+                        if(dotRow < lastDotTouchedRow){
+                            dot.getPaint().setColor(getRandomColor());
+                            dot.colorIndex = colorIndex;
+                        }
+                    }
+                }
+
+
+
+                /*for(Dot dot : m_dotsTouched){
+                    int col = dot.getCol();
+                    int row = dot.getRow();
+                    Dot newDot = getDotAbove(dot);
+                    m_dots.get(col).set(row,newDot);
+                    //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
+                    //m_dots.get(col).set(row, null);
+                }*/
+            }
+
             m_cellPath.clear();
             m_dotsTouched.clear();
             invalidate();
@@ -214,6 +263,7 @@ public class BoardView extends View {
         return lastDotColor == dotColor;
     }
 
+    // Returns true if the dot is next to and in line to the last dot touched
     public boolean dotWithinReach(Dot dot){
         Dot lastDot = m_dotsTouched.get(m_dotsTouched.size() - 1);
 
@@ -232,6 +282,24 @@ public class BoardView extends View {
         if(dotCol == lastDotCol && dotRow == up) return true;
         if(dotCol == lastDotCol && dotRow == down) return true;
         return false;
+    }
+
+    public Dot getDotAbove(Dot dot){
+        int dotRow = dot.getRow();
+
+        if(dotRow == 0){
+            Dot newDot = dot;
+            newDot.getPaint().setColor(getRandomColor());
+            newDot.colorIndex = colorIndex;
+            return newDot;
+            //return new Dot(dotX, dotY, dotRow, dotCol, touchSize, dotSize, randColor, colorIndex);
+        }
+        else{
+            Dot newDot = m_dots.get(dot.getCol()).get(dot.getRow()-1);
+
+            return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
+                    dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
+        }
     }
 
     public void drawDots(Canvas canvas){
@@ -329,4 +397,9 @@ public class BoardView extends View {
         });
         animator.start();
     }*/
+
+    public void setData(Bundle data)
+    {
+        bundle = data;
+    }
 }

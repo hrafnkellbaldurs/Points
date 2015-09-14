@@ -13,6 +13,10 @@ import org.w3c.dom.Text;
 public class PlayActivity extends AppCompatActivity {
 
     public TextView scoreView;
+    //Listener
+
+
+    //publi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

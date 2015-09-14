@@ -12,6 +12,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Debug;
 import android.util.AttributeSet;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Random;
 
 public class BoardView extends View {
+
+    MediaPlayer mySound;
+    MediaPlayer letGo;
 
     Bundle bundle = new Bundle();
 
@@ -84,7 +88,9 @@ public class BoardView extends View {
         m_paintPath.setAntiAlias(true);
 
         score = 0;
-        
+
+        mySound = MediaPlayer.create(getContext(), R.raw.party_horn);
+        letGo = MediaPlayer.create(getContext(), R.raw.let_go);
     }
 
     // Returns a random color from the DOT_COLORS array
@@ -116,7 +122,8 @@ public class BoardView extends View {
                     float dotDrawSize = m_cell_height / DOT_DRAW_SIZE;
                     int randColor = getRandomColor();
 
-                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), row, col, touchArea, dotDrawSize, randColor, colorIndex));
+                    colList.add(new Dot(x + getPaddingLeft(), y + getPaddingTop(), row, col,
+                            touchArea, dotDrawSize, randColor, colorIndex));
                 }
             }
         }
@@ -164,78 +171,102 @@ public class BoardView extends View {
     @Override
     public boolean onTouchEvent( MotionEvent event ){
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
 
-        if(x < getPaddingLeft() || y < getPaddingTop()){
-            return true;
-        }
+            int x = (int) event.getX();
+            int y = (int) event.getY();
 
-        if( event.getAction() == MotionEvent.ACTION_DOWN){
+            int xMax = getPaddingLeft() + m_cell_width * NUM_DOTS;
+            int yMax = getPaddingTop() + m_cell_height * NUM_DOTS;
+            x = Math.max(getPaddingLeft(), Math.min(x, xMax));
+            y = Math.max(getPaddingTop(), Math.min(y, yMax));
 
-            // Check each dot if your finger is in it
-            for(ArrayList<Dot> col : m_dots){
-                for(Dot dot : col){
-                    if(dot.getTouchAreaRectf().contains(x,y)){
-                        m_moving = true;
-                        m_cellPath.add(new Point(dot.getCol(), dot.getRow()));
-                        m_dotsTouched.add(dot);
-                        m_paintPath.setColor(dot.getPaint().getColor());
-                        //dot.getPaint().setColor(Color.BLACK);
-                    }
-                }
+            if(x < getPaddingLeft() || y < getPaddingTop()){
+                return true;
             }
-            invalidate();
-        }
-        else if( event.getAction() == MotionEvent.ACTION_MOVE){
-            if( m_moving){
-                if(!m_cellPath.isEmpty()){
-                    int col = xToCol(x);
-                    int row = yToRow(y);
-                    Dot dot = m_dots.get(col).get(row);
+            if(x > xMax || y > yMax){
+                return true;
+            }
 
-                    Point lastPoint = m_cellPath.get(m_cellPath.size() - 1);
-                    if((col != lastPoint.x || row != lastPoint.y))
-                    {
-                        boolean colorMatchesLast = lastDotColorMatches(dot);
-                        boolean dotWithinReach = dotWithinReach(dot);
+            if( event.getAction() == MotionEvent.ACTION_DOWN){
 
-                        if(colorMatchesLast && dotWithinReach){
-                            m_cellPath.add(new Point(col, row));
+                // Check each dot if your finger is in it
+                for(ArrayList<Dot> col : m_dots){
+                    for(Dot dot : col){
+                        if(dot.getTouchAreaRectf().contains(x,y)){
+                            m_moving = true;
+                            m_cellPath.add(new Point(dot.getCol(), dot.getRow()));
                             m_dotsTouched.add(dot);
+                            m_paintPath.setColor(dot.getPaint().getColor());
+                            //dot.getPaint().setColor(Color.BLACK);
                         }
                     }
                 }
                 invalidate();
             }
-        }
-        else if( event.getAction() == MotionEvent.ACTION_UP){
-            m_moving = false;
+            else if( event.getAction() == MotionEvent.ACTION_MOVE){
+                if( m_moving){
+                    
+                    int col = xToCol(x);
+                    int row = yToRow(y);
 
-            score += m_dotsTouched.size();
+                    // If the touch coordinates are within the board
+                    boolean touchedWithinBoard = (row <= (NUM_DOTS - 1) && col <= (NUM_DOTS - 1));
+                    if( touchedWithinBoard && !m_cellPath.isEmpty()){
 
-            // TODO: FIX THIS, ITS NOT WORKING
-            if (m_dotsTouched.size() > 1) {
-                int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
-                while(!m_dotsTouched.isEmpty()){
-                    Dot dot = m_dotsTouched.remove(0);
-                    int col = dot.getCol();
-                    int row = dot.getRow();
-                    Dot newDot = getDotAbove(dot);
-                    m_dots.get(col).set(row, newDot);
-                    //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
-                    //m_dots.get(col).set(row, null);
-                }
+                        Dot dot = m_dots.get(col).get(row);
 
-                for(ArrayList<Dot> col : m_dots){
-                    for(Dot dot : col){
-                        int dotRow = col.indexOf(dot);
-                        if(dotRow < lastDotTouchedRow){
-                            dot.getPaint().setColor(getRandomColor());
-                            dot.colorIndex = colorIndex;
+                        Point lastPoint = m_cellPath.get(m_cellPath.size() - 1);
+                        if((col != lastPoint.x || row != lastPoint.y))
+                        {
+                            boolean colorMatchesLast = lastDotColorMatches(dot);
+                            boolean dotWithinReach = dotWithinReach(dot);
+
+                            if(colorMatchesLast && dotWithinReach){
+                                m_cellPath.add(new Point(col, row));
+                                m_dotsTouched.add(dot);
+                            }
                         }
                     }
+                    invalidate();
                 }
+            }
+            else if( event.getAction() == MotionEvent.ACTION_UP){
+                m_moving = false;
+
+                if(m_dotsTouched.size() > 1){
+                    score += m_dotsTouched.size();
+                }
+
+                //Call listener scorechanged
+
+                String text = "Score: " + score;
+
+                Toast.makeText(getContext(),text , Toast.LENGTH_SHORT).show();
+
+
+                // TODO: FIX THIS, ITS NOT WORKING
+                if (m_dotsTouched.size() > 1) {
+                    mySound.start();
+                    int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
+                    while(!m_dotsTouched.isEmpty()){
+                        Dot dot = m_dotsTouched.remove(0);
+                        int col = dot.getCol();
+                        int row = dot.getRow();
+                        Dot newDot = getDotAbove(dot);
+                        m_dots.get(col).set(row, newDot);
+                        //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
+                        //m_dots.get(col).set(row, null);
+                    }
+
+                    for(ArrayList<Dot> col : m_dots){
+                        for(Dot dot : col){
+                            int dotRow = col.indexOf(dot);
+                            if(dotRow < lastDotTouchedRow){
+                                dot.getPaint().setColor(getRandomColor());
+                                dot.colorIndex = colorIndex;
+                            }
+                        }
+                    }
 
 
 
@@ -247,12 +278,16 @@ public class BoardView extends View {
                     //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
                     //m_dots.get(col).set(row, null);
                 }*/
+                }
+                else{
+                    letGo.start();
+                }
+
+                m_cellPath.clear();
+                m_dotsTouched.clear();
+                invalidate();
             }
 
-            m_cellPath.clear();
-            m_dotsTouched.clear();
-            invalidate();
-        }
         return true;
     }
 

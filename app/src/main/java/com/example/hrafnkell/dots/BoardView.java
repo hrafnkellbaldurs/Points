@@ -1,20 +1,14 @@
 package com.example.hrafnkell.dots;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Shader;
 import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.os.Debug;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +25,7 @@ public class BoardView extends View {
     MediaPlayer letGo;
     MediaPlayer JARLSQUAD;
 
-    Bundle bundle = new Bundle();
+    private ScoreHandler m_scoreHandler = null;
 
     /* Constants */
     // The number of rows and columns of dots
@@ -45,7 +39,7 @@ public class BoardView extends View {
             Color.rgb(218, 99, 65), Color.rgb(131, 174, 82), Color.rgb(244, 192, 57)};
     /* End of constants */
 
-    private int score;
+    private int m_score;
     private TextView scoreView;
 
     private int colorIndex;
@@ -88,7 +82,7 @@ public class BoardView extends View {
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
         m_paintPath.setAntiAlias(true);
 
-        score = 0;
+        m_score = 0;
 
         mySound = MediaPlayer.create(getContext(), R.raw.party_horn);
         letGo = MediaPlayer.create(getContext(), R.raw.let_go);
@@ -248,17 +242,10 @@ public class BoardView extends View {
             else if( event.getAction() == MotionEvent.ACTION_UP){
                 m_moving = false;
 
-                if(m_dotsTouched.size() > 1){
-                    score += m_dotsTouched.size();
+                if(m_dotsTouched.size() > 1) {
+                    m_score += m_dotsTouched.size();
+                    m_scoreHandler.setScore(m_score);
                 }
-
-                //Call listener scorechanged
-
-                String text = "Score: " + score;
-
-                Toast.makeText(getContext(),text , Toast.LENGTH_SHORT).show();
-
-
 
                 if (m_dotsTouched.size() > 1) {
                     if(m_dotsTouched.size() > 3){
@@ -306,10 +293,6 @@ public class BoardView extends View {
         int lastDotColor = lastDot.getPaint().getColor();
         int dotColor = dot.getPaint().getColor();
         return lastDotColor == dotColor;
-    }
-
-    public boolean dotHasBeenTouched(Dot dot){
-        return m_dotsTouched.contains(dot);
     }
 
     public boolean userIsBackTracking(int touchCol, int touchRow){
@@ -360,6 +343,10 @@ public class BoardView extends View {
             return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
                     dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
         }
+    }
+
+    public void setScoreHandler(ScoreHandler handler){
+        m_scoreHandler = handler;
     }
 
     public void drawDots(Canvas canvas){

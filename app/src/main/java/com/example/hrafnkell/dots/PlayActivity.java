@@ -1,20 +1,16 @@
 package com.example.hrafnkell.dots;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class PlayActivity extends Activity {
 
     public TextView scoreView;
     //Listener
+    BoardView m_bv;
 
 
     //publi
@@ -23,8 +19,20 @@ public class PlayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+
+        m_bv = (BoardView) findViewById(R.id.boardView);
         scoreView = (TextView) findViewById(R.id.play_score);
         scoreView.setText("0");
+
+        m_bv.setScoreHandler(new ScoreHandler() {
+            @Override
+            public void setScore(int score) {
+                String scoreString = String.valueOf(score);
+                scoreView.setText(scoreString);
+            }
+        });
+
+
     }
 
     @Override

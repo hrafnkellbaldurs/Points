@@ -17,7 +17,7 @@
             android:layout_marginTop="10pt"/>
         <TextView
             android:id="@+id/play_score"
-            android:layout_width="20dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10pt"
@@ -26,6 +26,7 @@
     </LinearLayout>
 
     <com.example.hrafnkell.dots.BoardView
+        android:id="@+id/boardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#000"

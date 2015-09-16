@@ -29,6 +29,7 @@ public class BoardView extends View {
 
     MediaPlayer mySound;
     MediaPlayer letGo;
+    MediaPlayer JARLSQUAD;
 
     Bundle bundle = new Bundle();
 
@@ -91,6 +92,7 @@ public class BoardView extends View {
 
         mySound = MediaPlayer.create(getContext(), R.raw.party_horn);
         letGo = MediaPlayer.create(getContext(), R.raw.let_go);
+        JARLSQUAD = MediaPlayer.create(getContext(), R.raw.ja);
     }
 
     // Returns a random color from the DOT_COLORS array
@@ -205,7 +207,7 @@ public class BoardView extends View {
             }
             else if( event.getAction() == MotionEvent.ACTION_MOVE){
                 if( m_moving){
-                    
+
                     int col = xToCol(x);
                     int row = yToRow(y);
 
@@ -214,16 +216,26 @@ public class BoardView extends View {
                     if( touchedWithinBoard && !m_cellPath.isEmpty()){
 
                         Dot dot = m_dots.get(col).get(row);
-
                         Point lastPoint = m_cellPath.get(m_cellPath.size() - 1);
                         if((col != lastPoint.x || row != lastPoint.y))
                         {
                             boolean colorMatchesLast = lastDotColorMatches(dot);
                             boolean dotWithinReach = dotWithinReach(dot);
+                            boolean dotHasBeenTouched = dotHasBeenTouched(dot);
 
+                            // If the dot is of the same color, is within reach, and hasn't
+                            // been touched, add it
                             if(colorMatchesLast && dotWithinReach){
-                                m_cellPath.add(new Point(col, row));
-                                m_dotsTouched.add(dot);
+                                if(!dotHasBeenTouched){
+                                    m_cellPath.add(new Point(col, row));
+                                    m_dotsTouched.add(dot);
+                                }
+                                // if the dot has been touched, check if the user is
+                                // backtracking/undoing his selection
+                                else if(userIsBackTracking(col,row)){
+                                    m_cellPath.remove(m_cellPath.size()-1);
+                                    m_dotsTouched.remove(m_dotsTouched.size()-1);
+                                }
                             }
                         }
                     }
@@ -246,7 +258,13 @@ public class BoardView extends View {
 
                 // TODO: FIX THIS, ITS NOT WORKING
                 if (m_dotsTouched.size() > 1) {
-                    mySound.start();
+                    if(m_dotsTouched.size() > 3){
+                        JARLSQUAD.start();
+                    }
+                    else{
+                        mySound.start();
+                    }
+
                     int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
                     while(!m_dotsTouched.isEmpty()){
                         Dot dot = m_dotsTouched.remove(0);
@@ -296,6 +314,21 @@ public class BoardView extends View {
         int lastDotColor = lastDot.getPaint().getColor();
         int dotColor = dot.getPaint().getColor();
         return lastDotColor == dotColor;
+    }
+
+    public boolean dotHasBeenTouched(Dot dot){
+        return m_dotsTouched.contains(dot);
+    }
+
+    public boolean userIsBackTracking(int touchCol, int touchRow){
+        if(m_dotsTouched.size() >= 2) {
+            Dot nextLastDot = m_dotsTouched.get(m_dotsTouched.size() - 2);
+
+            return nextLastDot.getCol() == touchCol && nextLastDot.getRow() == touchRow;
+        }
+        else{
+            return false;
+        }
     }
 
     // Returns true if the dot is next to and in line to the last dot touched

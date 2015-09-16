@@ -211,8 +211,11 @@ public class BoardView extends View {
                     int col = xToCol(x);
                     int row = yToRow(y);
 
-                    // If the touch coordinates are within the board
+
                     boolean touchedWithinBoard = (row <= (NUM_DOTS - 1) && col <= (NUM_DOTS - 1));
+
+                    // If the touch coordinates are within the board,
+                    // and the
                     if( touchedWithinBoard && !m_cellPath.isEmpty()){
 
                         Dot dot = m_dots.get(col).get(row);
@@ -221,20 +224,20 @@ public class BoardView extends View {
                         {
                             boolean colorMatchesLast = lastDotColorMatches(dot);
                             boolean dotWithinReach = dotWithinReach(dot);
-                            boolean dotHasBeenTouched = dotHasBeenTouched(dot);
+                            //boolean dotHasBeenTouched = dotHasBeenTouched(dot);
 
                             // If the dot is of the same color, is within reach, and hasn't
                             // been touched, add it
                             if(colorMatchesLast && dotWithinReach){
-                                if(!dotHasBeenTouched){
-                                    m_cellPath.add(new Point(col, row));
-                                    m_dotsTouched.add(dot);
-                                }
                                 // if the dot has been touched, check if the user is
                                 // backtracking/undoing his selection
-                                else if(userIsBackTracking(col,row)){
+                                if(userIsBackTracking(col,row)){
                                     m_cellPath.remove(m_cellPath.size()-1);
                                     m_dotsTouched.remove(m_dotsTouched.size()-1);
+                                }
+                                else{
+                                    m_cellPath.add(new Point(col, row));
+                                    m_dotsTouched.add(dot);
                                 }
                             }
                         }

@@ -259,7 +259,7 @@ public class BoardView extends View {
                 Toast.makeText(getContext(),text , Toast.LENGTH_SHORT).show();
 
 
-                // TODO: FIX THIS, ITS NOT WORKING
+
                 if (m_dotsTouched.size() > 1) {
                     if(m_dotsTouched.size() > 3){
                         JARLSQUAD.start();
@@ -267,7 +267,7 @@ public class BoardView extends View {
                     else{
                         mySound.start();
                     }
-
+                    // TODO: FIX THIS, ITS NOT WORKING
                     int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
                     while(!m_dotsTouched.isEmpty()){
                         Dot dot = m_dotsTouched.remove(0);
@@ -288,17 +288,6 @@ public class BoardView extends View {
                             }
                         }
                     }
-
-
-
-                /*for(Dot dot : m_dotsTouched){
-                    int col = dot.getCol();
-                    int row = dot.getRow();
-                    Dot newDot = getDotAbove(dot);
-                    m_dots.get(col).set(row,newDot);
-                    //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
-                    //m_dots.get(col).set(row, null);
-                }*/
                 }
                 else{
                     letGo.start();
@@ -469,8 +458,4 @@ public class BoardView extends View {
         animator.start();
     }*/
 
-    public void setData(Bundle data)
-    {
-        bundle = data;
-    }
 }

@@ -32,7 +32,6 @@ public class Dot {
     private float dotDrawSize;
 
     // The color of the dot
-    private int color;
     public int colorIndex;
 
     public Dot(int x,int y, int row, int col, float touchArea, float dotDrawSize, int color, int colorIndex){
@@ -42,17 +41,14 @@ public class Dot {
         this.row = row;
         this.touchArea = touchArea;
         this.dotDrawSize = dotDrawSize;
-        this.color = color;
         this.colorIndex = colorIndex;
         this.touchAreaRectf = new RectF(x - touchArea, y - touchArea, x + touchArea, y + touchArea );
         this.dotDrawRectf = new RectF(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize );
         this.paint = new Paint();
-        //this.paint.setColor(this.color.hashCode());
         this.paint.setColor(color);
         this.paint.setStyle(Paint.Style.FILL_AND_STROKE);
         this.paint.setAntiAlias(true);
     }
-
 
     public void setX(int x){
         this.x = x;
@@ -64,14 +60,6 @@ public class Dot {
         this.y = y;
         this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
         this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
-    }
-
-    public void setColor(int color){
-        this.color = color;
-    }
-
-    public int getColor(){
-        return this.color;
     }
 
     public int getX(){

@@ -1,5 +1,6 @@
 package com.example.hrafnkell.dots;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class PlayActivity extends AppCompatActivity {
+public class PlayActivity extends Activity {
 
     public TextView scoreView;
     //Listener

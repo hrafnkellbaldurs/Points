@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,8 @@ import java.util.Random;
 
 public class BoardView extends View {
 
-    MediaPlayer mySound;
-    MediaPlayer letGo;
-    MediaPlayer JARLSQUAD;
+    MediaPlayer [] sounds = {new MediaPlayer(), new MediaPlayer(),
+            new MediaPlayer(), new MediaPlayer(), new MediaPlayer(), new MediaPlayer()};
 
     private ScoreHandler m_scoreHandler = null;
 
@@ -84,9 +83,12 @@ public class BoardView extends View {
 
         m_score = 0;
 
-        mySound = MediaPlayer.create(getContext(), R.raw.party_horn);
-        letGo = MediaPlayer.create(getContext(), R.raw.let_go);
-        JARLSQUAD = MediaPlayer.create(getContext(), R.raw.ja);
+        sounds[0] = MediaPlayer.create(getContext(), R.raw.onedot);
+        sounds[1] = MediaPlayer.create(getContext(), R.raw.twodot);
+        sounds[2] = MediaPlayer.create(getContext(), R.raw.threedot);
+        sounds[3] = MediaPlayer.create(getContext(), R.raw.fourdot);
+        sounds[4] = MediaPlayer.create(getContext(), R.raw.fivedot);
+        sounds[5] = MediaPlayer.create(getContext(), R.raw.sixdot);
     }
 
     // Returns a random color from the DOT_COLORS array
@@ -192,6 +194,10 @@ public class BoardView extends View {
                             m_moving = true;
                             m_cellPath.add(new Point(dot.getCol(), dot.getRow()));
                             m_dotsTouched.add(dot);
+                            if(sounds[0].isPlaying()){
+                                sounds[0].stop();
+                            }
+                            sounds[0].start();
                             m_paintPath.setColor(dot.getPaint().getColor());
                             //dot.getPaint().setColor(Color.BLACK);
                         }
@@ -205,7 +211,6 @@ public class BoardView extends View {
                     int col = xToCol(x);
                     int row = yToRow(y);
 
-
                     boolean touchedWithinBoard = (row <= (NUM_DOTS - 1) && col <= (NUM_DOTS - 1));
 
                     // If the touch coordinates are within the board,
@@ -218,12 +223,11 @@ public class BoardView extends View {
                         {
                             boolean colorMatchesLast = lastDotColorMatches(dot);
                             boolean dotWithinReach = dotWithinReach(dot);
-                            //boolean dotHasBeenTouched = dotHasBeenTouched(dot);
 
                             // If the dot is of the same color, is within reach, and hasn't
                             // been touched, add it
                             if(colorMatchesLast && dotWithinReach){
-                                // if the dot has been touched, check if the user is
+                                // If the dot has been touched, check if the user is
                                 // backtracking/undoing his selection
                                 if(userIsBackTracking(col,row)){
                                     m_cellPath.remove(m_cellPath.size()-1);
@@ -232,6 +236,15 @@ public class BoardView extends View {
                                 else{
                                     m_cellPath.add(new Point(col, row));
                                     m_dotsTouched.add(dot);
+                                    int soundIndex = m_dotsTouched.size()-1;
+
+                                    // If the index is out of bounds, set it to the last sound
+                                    if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
+
+                                    if(sounds[soundIndex].isPlaying()){
+                                        sounds[soundIndex].stop();
+                                    }
+                                    sounds[soundIndex].start();
                                 }
                             }
                         }
@@ -248,13 +261,20 @@ public class BoardView extends View {
                 }
 
                 if (m_dotsTouched.size() > 1) {
-                    if(m_dotsTouched.size() > 3){
-                        JARLSQUAD.start();
-                    }
-                    else{
-                        mySound.start();
-                    }
-                    // TODO: FIX THIS, ITS NOT WORKING
+                    updateBoard();
+                }
+
+                m_cellPath.clear();
+                m_dotsTouched.clear();
+                invalidate();
+            }
+
+        return true;
+    }
+
+    public void updateBoard(){
+
+        // TODO: FIX THIS, ITS NOT WORKING
                     int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
                     while(!m_dotsTouched.isEmpty()){
                         Dot dot = m_dotsTouched.remove(0);
@@ -275,17 +295,7 @@ public class BoardView extends View {
                             }
                         }
                     }
-                }
-                else{
-                    letGo.start();
-                }
 
-                m_cellPath.clear();
-                m_dotsTouched.clear();
-                invalidate();
-            }
-
-        return true;
     }
 
     public boolean lastDotColorMatches(Dot dot){

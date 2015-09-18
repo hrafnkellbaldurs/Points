@@ -30,7 +30,7 @@
             android:name=".HighScoreActivity"
             android:label="@string/title_activity_high_score"
             android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.hrafnkell.dots.MainActivity" />

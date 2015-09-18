@@ -287,24 +287,29 @@ public class BoardView extends View {
         int countTotal = 0;
 
         for(List<Dot> col: m_dots){
-            List<Dot> tempDotsColumn = new ArrayList<>();
             for(Dot dot : col){
                 if(!m_dotsTouched.contains(dot)){
                     int count = getTouchedCountBelow(dot);
+                    if(col.indexOf(dot) == 0 && count == 0){
+                        break;
+                    }
                     countTotal += count;
                     wholeDots.add(dot);
                     wholeDotRows.add(count);
+
                 }
-                tempDotsColumn.add(dot);
             }
 
             if(countTotal != 0){
 
-                moveDotsDown(wholeDots, wholeDotRows, tempDotsColumn);
-
-                /*for(Dot dot : wholeDots){
-                    moveDotDown(dot, wholeDotRows.get(wholeDots.indexOf(dot)));
-                }*/
+                for(int dot = wholeDots.size() - 1; dot >= 0; dot--){
+                    Dot dotToMove = wholeDots.get(dot);
+                    int amount = wholeDotRows.get(wholeDots.indexOf(dotToMove));
+                    // move the color of the dot amount down the column
+                    if(amount != 0){
+                        moveDotDown(dotToMove, amount);
+                    }
+                }
 
                 fillColWithRandom(wholeDots.get(0).getCol(), m_dotsTouched.size());
             }
@@ -313,7 +318,6 @@ public class BoardView extends View {
             wholeDotRows.clear();
             wholeDots.clear();
         }
-            int bla = 9;
     }
 
     /* Counts and returns the amount of dots that have been touched below a given dot */
@@ -338,24 +342,8 @@ public class BoardView extends View {
         }
     }
 
-    /* Takes the color from the given dot and moves it a given amount down the dot's row */
-    List<Dot> moveDotsDown(List<Dot> wholeDots, List<Integer> wholeDotsRows, List<Dot> tempDotsColumn){
-
-        //TODO: update the colors in the tempDotsColumn and then call replaceColumn
-        //TODO: with tempDotsColumn
-
-        // for loop( Dot dot : wholeDots)
-        //   int amount = wholeDotRows.get(wholeDots.indexOf(dot));
-        //   dotToChange = tempDotsColumn.get(thisCol).get(thisRow +  amount)
-        //   dotToCopy = m_dots.get(thisCol).get(thisRow)
-        //   dotToChange.getPaint().setColor(...
-        //basicly just make a temp column so we dont fuck up the original, and then
-        //replace the original with the temp
-
-
-        //void moveDotsDown(Dot dot, int amount){
+    void moveDotDown(Dot dot, int amount){
         Dot dotToChange = m_dots.get(dot.getCol()).get(dot.getRow() + amount);
-        int color = dot.getPaint().getColor();
         dotToChange.getPaint().setColor(dot.getPaint().getColor());
         dotToChange.colorIndex = dot.colorIndex;
     }

@@ -12,6 +12,7 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.ConsoleMessage;
 import android.widget.TextView;
 
 
@@ -34,8 +35,16 @@ public class BoardView extends View {
     // A lower number equals a bigger dot
     private final float DOT_DRAW_SIZE = 5.0f;
     // A selection of colors that a dot can be
-    private final int [] DOT_COLORS = {Color.rgb(126, 84, 124), Color.rgb(97, 187, 213),
-            Color.rgb(218, 99, 65), Color.rgb(131, 174, 82), Color.rgb(244, 192, 57)};
+    //0=purple
+    //1=blue
+    //2=orange
+    //3=green
+    //4=yellow
+    private final int [] DOT_COLORS = {Color.rgb(126, 84, 124),
+                                        Color.rgb(97, 187, 213),
+                                        Color.rgb(218, 99, 65),
+                                        Color.rgb(131, 174, 82),
+                                        Color.rgb(244, 192, 57)};
     /* End of constants */
 
     private int m_score;
@@ -273,28 +282,85 @@ public class BoardView extends View {
     }
 
     public void updateBoard(){
+        ArrayList<Integer> wholeDotRows = new ArrayList<>();
+        ArrayList<Dot> wholeDots = new ArrayList<>();
+        int countTotal = 0;
 
-        // TODO: FIX THIS, ITS NOT WORKING
-                    int lastDotTouchedRow = m_dotsTouched.get(m_dotsTouched.size()-1).getRow();
-                    while(!m_dotsTouched.isEmpty()){
-                        Dot dot = m_dotsTouched.remove(0);
-                        int col = dot.getCol();
-                        int row = dot.getRow();
-                        Dot newDot = getDotAbove(dot);
-                        m_dots.get(col).set(row, newDot);
-                        //m_dots.get(col).get(row).getPaint().setColor(Color.BLACK);
-                        //m_dots.get(col).set(row, null);
-                    }
+        for(List<Dot> col: m_dots){
+            List<Dot> tempDotsColumn = new ArrayList<>();
+            for(Dot dot : col){
+                if(!m_dotsTouched.contains(dot)){
+                    int count = getTouchedCountBelow(dot);
+                    countTotal += count;
+                    wholeDots.add(dot);
+                    wholeDotRows.add(count);
+                }
+                tempDotsColumn.add(dot);
+            }
 
-                    for(ArrayList<Dot> col : m_dots){
-                        for(Dot dot : col){
-                            int dotRow = col.indexOf(dot);
-                            if(dotRow < lastDotTouchedRow){
-                                dot.getPaint().setColor(getRandomColor());
-                                dot.colorIndex = colorIndex;
-                            }
-                        }
-                    }
+            if(countTotal != 0){
+
+                moveDotsDown(wholeDots, wholeDotRows, tempDotsColumn);
+
+                /*for(Dot dot : wholeDots){
+                    moveDotDown(dot, wholeDotRows.get(wholeDots.indexOf(dot)));
+                }*/
+
+                fillColWithRandom(wholeDots.get(0).getCol(), m_dotsTouched.size());
+            }
+
+            countTotal = 0;
+            wholeDotRows.clear();
+            wholeDots.clear();
+        }
+            int bla = 9;
+    }
+
+    /* Counts and returns the amount of dots that have been touched below a given dot */
+    int getTouchedCountBelow(Dot dot){
+        int dotRow = dot.getRow();
+        int dotCol = dot.getCol();
+        int count = 0;
+        for(int currDot = dotRow + 1; currDot < NUM_DOTS; currDot++){
+            Dot suspect = m_dots.get(dotCol).get(currDot);
+            if(m_dotsTouched.contains(suspect)){
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    /* Fills a column with random colors from the top row to the row that it stops at   */
+    void fillColWithRandom(int col ,int stopRow){
+        for(int dot = 0; dot < stopRow; dot++){
+            m_dots.get(col).get(dot).getPaint().setColor(getRandomColor());
+        }
+    }
+
+    /* Takes the color from the given dot and moves it a given amount down the dot's row */
+    List<Dot> moveDotsDown(List<Dot> wholeDots, List<Integer> wholeDotsRows, List<Dot> tempDotsColumn){
+
+        //TODO: update the colors in the tempDotsColumn and then call replaceColumn
+        //TODO: with tempDotsColumn
+
+        // for loop( Dot dot : wholeDots)
+        //   int amount = wholeDotRows.get(wholeDots.indexOf(dot));
+        //   dotToChange = tempDotsColumn.get(thisCol).get(thisRow +  amount)
+        //   dotToCopy = m_dots.get(thisCol).get(thisRow)
+        //   dotToChange.getPaint().setColor(...
+        //basicly just make a temp column so we dont fuck up the original, and then
+        //replace the original with the temp
+
+
+        //void moveDotsDown(Dot dot, int amount){
+        Dot dotToChange = m_dots.get(dot.getCol()).get(dot.getRow() + amount);
+        int color = dot.getPaint().getColor();
+        dotToChange.getPaint().setColor(dot.getPaint().getColor());
+        dotToChange.colorIndex = dot.colorIndex;
+    }
+
+    public void replaceColumn(List<Dot> newCol){
 
     }
 
@@ -335,24 +401,6 @@ public class BoardView extends View {
         if(dotCol == lastDotCol && dotRow == up) return true;
         if(dotCol == lastDotCol && dotRow == down) return true;
         return false;
-    }
-
-    public Dot getDotAbove(Dot dot){
-        int dotRow = dot.getRow();
-
-        if(dotRow == 0){
-            Dot newDot = dot;
-            newDot.getPaint().setColor(getRandomColor());
-            newDot.colorIndex = colorIndex;
-            return newDot;
-            //return new Dot(dotX, dotY, dotRow, dotCol, touchSize, dotSize, randColor, colorIndex);
-        }
-        else{
-            Dot newDot = m_dots.get(dot.getCol()).get(dot.getRow()-1);
-
-            return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
-                    dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
-        }
     }
 
     public void setScoreHandler(ScoreHandler handler){
@@ -453,6 +501,24 @@ public class BoardView extends View {
             }
         });
         animator.start();
+    }*/
+
+     /*public Dot getDotAbove(Dot dot){
+        int dotRow = dot.getRow();
+
+        if(dotRow == 0){
+            Dot newDot = dot;
+            newDot.getPaint().setColor(getRandomColor());
+            newDot.colorIndex = colorIndex;
+            return newDot;
+            //return new Dot(dotX, dotY, dotRow, dotCol, touchSize, dotSize, randColor, colorIndex);
+        }
+        else{
+            Dot newDot = m_dots.get(dot.getCol()).get(dot.getRow()-1);
+
+            return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
+                    dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
+        }
     }*/
 
 }

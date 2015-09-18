@@ -300,11 +300,11 @@ public class BoardView extends View {
 
             if(countTotal != 0){
 
-                moveDotsDown(wholeDots, wholeDotRows, tempDotsColumn);
+                //moveDotsDown(wholeDots, wholeDotRows, tempDotsColumn);
 
-                /*for(Dot dot : wholeDots){
+                for(Dot dot : wholeDots){
                     moveDotDown(dot, wholeDotRows.get(wholeDots.indexOf(dot)));
-                }*/
+                }
 
                 fillColWithRandom(wholeDots.get(0).getCol(), m_dotsTouched.size());
             }
@@ -313,7 +313,7 @@ public class BoardView extends View {
             wholeDotRows.clear();
             wholeDots.clear();
         }
-            int bla = 9;
+
     }
 
     /* Counts and returns the amount of dots that have been touched below a given dot */
@@ -339,7 +339,7 @@ public class BoardView extends View {
     }
 
     /* Takes the color from the given dot and moves it a given amount down the dot's row */
-    List<Dot> moveDotsDown(List<Dot> wholeDots, List<Integer> wholeDotsRows, List<Dot> tempDotsColumn){
+   //List<Dot> moveDotsDown(List<Dot> wholeDots, List<Integer> wholeDotsRows, List<Dot> tempDotsColumn){
 
         //TODO: update the colors in the tempDotsColumn and then call replaceColumn
         //TODO: with tempDotsColumn
@@ -352,8 +352,7 @@ public class BoardView extends View {
         //basicly just make a temp column so we dont fuck up the original, and then
         //replace the original with the temp
 
-
-        //void moveDotsDown(Dot dot, int amount){
+   public void moveDotDown(Dot dot, int amount){
         Dot dotToChange = m_dots.get(dot.getCol()).get(dot.getRow() + amount);
         int color = dot.getPaint().getColor();
         dotToChange.getPaint().setColor(dot.getPaint().getColor());

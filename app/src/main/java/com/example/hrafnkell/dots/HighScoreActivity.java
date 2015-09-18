@@ -87,22 +87,13 @@ public class HighScoreActivity extends Activity {
     public void storeHighScoreRecord(String name, int score){
         if(!name.isEmpty() && score >= 0){
             m_highScoreRecords.add(new HighScoreRecord(name, score));
-            //sortHighScores();
+            sortHighScores();
             m_adapter.notifyDataSetChanged();
         }
     }
 
     void sortHighScores(){
-        // TODO: fix alghorithm
-        int highest = 0;
-        for (int i = 0; i < m_highScoreRecords.size() ; i++) {
-            int score = m_highScoreRecords.get(i).getScore();
-            if (score > highest) {
-                highest = score;
-                HighScoreRecord newHighScore = m_highScoreRecords.remove(i);
-                m_highScoreRecords.add(0, newHighScore);
-            }
-        }
+        Collections.sort(m_highScoreRecords);
     }
 
     void writeRecords(){

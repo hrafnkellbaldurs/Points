@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Hrafnkell on 9/9/2015.
  */
-public class HighScoreRecord implements Serializable {
+public class HighScoreRecord implements Serializable, Comparable<HighScoreRecord> {
 
     private String m_name;
     private int m_score;
@@ -13,6 +13,11 @@ public class HighScoreRecord implements Serializable {
     HighScoreRecord(String name, int score){
         m_name = name;
         m_score = score;
+    }
+
+    @Override
+    public int compareTo(HighScoreRecord record){
+        return record.getScore() - getScore();
     }
 
     String getName(){

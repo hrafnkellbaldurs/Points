@@ -285,9 +285,11 @@ public class BoardView extends View {
         ArrayList<Integer> wholeDotRows = new ArrayList<>();
         ArrayList<Dot> wholeDots = new ArrayList<>();
         int countTotal = 0;
+        int currCol = 0;
 
         for(List<Dot> col: m_dots){
             for(Dot dot : col){
+                currCol = col.get(col.indexOf(dot)).getCol();
                 if(!m_dotsTouched.contains(dot)){
                     int count = getTouchedCountBelow(dot);
                     if(col.indexOf(dot) == 0 && count == 0){
@@ -296,7 +298,6 @@ public class BoardView extends View {
                     countTotal += count;
                     wholeDots.add(dot);
                     wholeDotRows.add(count);
-
                 }
             }
 
@@ -310,14 +311,22 @@ public class BoardView extends View {
                         moveDotDown(dotToMove, amount);
                     }
                 }
-
-                fillColWithRandom(wholeDots.get(0).getCol(), m_dotsTouched.size());
+                int touchedInColumnCount = getTouchedInColumn(currCol);
+                fillColWithRandom(currCol, touchedInColumnCount);
             }
 
             countTotal = 0;
             wholeDotRows.clear();
             wholeDots.clear();
         }
+    }
+
+    int getTouchedInColumn(int col){
+        int count = 0;
+        for(Dot dot : m_dotsTouched){
+            if(dot.getCol() == col) count++;
+        }
+        return count;
     }
 
     /* Counts and returns the amount of dots that have been touched below a given dot */
@@ -346,10 +355,6 @@ public class BoardView extends View {
         Dot dotToChange = m_dots.get(dot.getCol()).get(dot.getRow() + amount);
         dotToChange.getPaint().setColor(dot.getPaint().getColor());
         dotToChange.colorIndex = dot.colorIndex;
-    }
-
-    public void replaceColumn(List<Dot> newCol){
-
     }
 
     public boolean lastDotColorMatches(Dot dot){

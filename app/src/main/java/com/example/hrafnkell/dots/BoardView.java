@@ -302,7 +302,6 @@ public class BoardView extends View {
             }
 
             if(countTotal != 0){
-
                 for(int dot = wholeDots.size() - 1; dot >= 0; dot--){
                     Dot dotToMove = wholeDots.get(dot);
                     int amount = wholeDotRows.get(wholeDots.indexOf(dotToMove));
@@ -311,9 +310,10 @@ public class BoardView extends View {
                         moveDotDown(dotToMove, amount);
                     }
                 }
-                int touchedInColumnCount = getTouchedInColumn(currCol);
-                fillColWithRandom(currCol, touchedInColumnCount);
             }
+
+            int touchedInColumnCount = getTouchedInColumn(currCol);
+            fillColWithRandom(currCol, touchedInColumnCount);
 
             countTotal = 0;
             wholeDotRows.clear();

@@ -57,11 +57,8 @@ public class PlayActivity extends MainActivity {
 
     public void addHighScore(final int score){
 
-        LayoutInflater li = LayoutInflater.from(context);
-        View endGameView = li.inflate(R.layout.endgame_view, null);
-
         final EditText playerName = new EditText(context);
-        //final EditText playerName = (EditText) findViewById(R.id.endgame_highscore_name);
+
         playerName.setInputType(InputType.TYPE_CLASS_TEXT);
 
         AlertDialog.Builder endGameDialog = new AlertDialog.Builder(context);

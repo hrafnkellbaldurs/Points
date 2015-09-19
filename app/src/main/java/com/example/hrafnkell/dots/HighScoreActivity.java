@@ -30,14 +30,8 @@ public class HighScoreActivity extends MainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
-        Intent intent = getIntent();
 
         m_listView = (ListView) findViewById(R.id.highscore_records);
-
-
-        ArrayList<HighScore> list = db.getHighScores();
-        System.out.println("HIGHSCORES LIST: " + list.size());
-
     }
 
     public void onResume(){
@@ -50,13 +44,11 @@ public class HighScoreActivity extends MainActivity {
     @Override
     public void onStart(){
         super.onStart();
-        //readRecords();
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        //writeRecords();
     }
 
     @Override
@@ -81,46 +73,4 @@ public class HighScoreActivity extends MainActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*public void storeHighScoreRecord(String name, int score){
-        if(!name.isEmpty() && score >= 0){
-            m_highScoreRecords.add(new HighScoreRecord(name, score));
-            sortHighScores();
-            m_adapter.notifyDataSetChanged();
-        }
-    }*/
-
-    void sortHighScores(){
-        //Collections.sort(m_highScoreRecords);
-    }
-
-    /*void writeRecords(){
-        try{
-            FileOutputStream fos = openFileOutput("highscores2.ser", Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(m_highScoreRecords);
-            oos.close();
-            fos.close();
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
-    }*/
-
-    /*void readRecords(){
-        try{
-            FileInputStream fis = openFileInput("highscores2.ser");
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            ArrayList<HighScoreRecord> highScoreRecords = (ArrayList) ois.readObject();
-            ois.close();
-            fis.close();
-            m_highScoreRecords.clear();
-            for(HighScoreRecord rec : highScoreRecords){
-                m_highScoreRecords.add(rec);
-            }
-
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }*/
 }

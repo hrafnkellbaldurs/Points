@@ -54,4 +54,9 @@ public class MainActivity extends Activity {
         Intent intent = new Intent(this, HighScoreActivity.class);
         startActivity(intent);
     }
+
+    public void onOptionsClick(View view){
+        Intent intent = new Intent(this, OptionsActivity.class);
+        startActivity(intent);
+    }
 }

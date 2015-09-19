@@ -9,10 +9,13 @@ import android.view.View;
 
 public class MainActivity extends Activity {
 
+    DatabaseHandler db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = new DatabaseHandler(this);
     }
 
     @Override
@@ -37,24 +40,9 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * If the Timed button is pressed, we go to that activity
-     * @param view The current view
-     */
+
     public void onPlayClick(View view){
         Intent intent = new Intent(this, PlayActivity.class);
-        startActivity(intent);
-    }
-
-    public void onTimedClick(View view){
-        Intent intent = new Intent(this, PlayActivity.class);
-        intent.putExtra("mode", "timed");
-        startActivity(intent);
-    }
-
-    public void onMovesClick(View view){
-        Intent intent = new Intent(this, PlayActivity.class);;
-        intent.putExtra("mode", "moves");
         startActivity(intent);
     }
 

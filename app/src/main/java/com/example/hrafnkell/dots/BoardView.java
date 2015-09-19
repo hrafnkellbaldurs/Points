@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.ConsoleMessage;
 import android.widget.TextView;
 
 
@@ -25,9 +24,10 @@ public class BoardView extends View {
     MediaPlayer [] sounds = {new MediaPlayer(), new MediaPlayer(),
             new MediaPlayer(), new MediaPlayer(), new MediaPlayer(), new MediaPlayer()};
 
-    private ScoreHandler m_scoreHandler = null;
+    private GameHandler m_gameHandler = null;
 
     /* Constants */
+    private final int INITIAL_MOVES = 2;
     // The number of rows and columns of dots
     private final int NUM_DOTS = 6;
     // A lower number equals a bigger touch area
@@ -48,6 +48,7 @@ public class BoardView extends View {
     /* End of constants */
 
     private int m_score;
+    private int m_moves;
     private TextView scoreView;
 
     private int colorIndex;
@@ -58,7 +59,7 @@ public class BoardView extends View {
     // All paths that the user draws
     private List<Point> m_cellPath = new ArrayList<Point>();
 
-    private List<Dot> m_dotsTouched = new ArrayList<Dot>();
+    private List<Dot> m_dotsTouched = new ArrayList<>();
 
     // Tells us if the user is currently moving his finger on the device screen
     private boolean m_moving = false;
@@ -91,6 +92,7 @@ public class BoardView extends View {
         m_paintPath.setAntiAlias(true);
 
         m_score = 0;
+        m_moves = INITIAL_MOVES;
 
         sounds[0] = MediaPlayer.create(getContext(), R.raw.onedot);
         sounds[1] = MediaPlayer.create(getContext(), R.raw.twodot);
@@ -266,7 +268,11 @@ public class BoardView extends View {
 
                 if(m_dotsTouched.size() > 1) {
                     m_score += m_dotsTouched.size();
-                    m_scoreHandler.setScore(m_score);
+                    m_moves--;
+                    m_gameHandler.setView(m_moves ,m_score);
+                    if(m_moves == 0){
+                        endGame();
+                    }
                 }
 
                 if (m_dotsTouched.size() > 1) {
@@ -396,8 +402,8 @@ public class BoardView extends View {
         return false;
     }
 
-    public void setScoreHandler(ScoreHandler handler){
-        m_scoreHandler = handler;
+    public void setGameHandler(GameHandler handler){
+        m_gameHandler = handler;
     }
 
     public void drawDots(Canvas canvas){
@@ -474,6 +480,11 @@ public class BoardView extends View {
     }
     private int rowToY(int row){
         return row * m_cell_height + getPaddingTop();
+    }
+
+    private void endGame(){
+       // m_scoreHandler.setView(80085, 80085);
+        m_gameHandler.endGame(m_score);
     }
 
     /*

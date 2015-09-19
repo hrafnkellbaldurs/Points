@@ -18,43 +18,45 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class HighScoreActivity extends Activity {
+public class HighScoreActivity extends MainActivity {
 
     private ListView m_listView;
 
-    ArrayList<HighScoreRecord> m_highScoreRecords = new ArrayList<>();
+    ArrayList<HighScore> m_highScoreRecords;
 
-    HighScoreRecordAdapter m_adapter;
+    HighScoreAdapter m_adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
         Intent intent = getIntent();
-        m_listView = (ListView) findViewById(R.id.highscore_records);
-        m_adapter = new HighScoreRecordAdapter(this, m_highScoreRecords);
-        m_listView.setAdapter(m_adapter);
 
-        storeHighScoreRecord("Gunnar", 42);
-        storeHighScoreRecord("Atli", 502);
-        storeHighScoreRecord("Magnus", 1337);
-        storeHighScoreRecord("Hrabbi", 1337);
-        storeHighScoreRecord("Sara", 1);
-        storeHighScoreRecord("Rannveig", 80085);
-        storeHighScoreRecord("Sigmundur David", 404);
+        m_listView = (ListView) findViewById(R.id.highscore_records);
+
+
+        ArrayList<HighScore> list = db.getHighScores();
+        System.out.println("HIGHSCORES LIST: " + list.size());
+
+    }
+
+    public void onResume(){
+        super.onResume();
+        m_highScoreRecords = db.getHighScores();
+        m_adapter = new HighScoreAdapter(this, m_highScoreRecords);
+        m_listView.setAdapter(m_adapter);
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        readRecords();
-        m_adapter.notifyDataSetChanged();
+        //readRecords();
     }
 
     @Override
     public void onStop(){
         super.onStop();
-        writeRecords();
+        //writeRecords();
     }
 
     @Override
@@ -79,24 +81,19 @@ public class HighScoreActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Adds a new high score to the high score record list
-     * @param name The name of the user
-     * @param score The score of the user
-     */
-    public void storeHighScoreRecord(String name, int score){
+    /*public void storeHighScoreRecord(String name, int score){
         if(!name.isEmpty() && score >= 0){
             m_highScoreRecords.add(new HighScoreRecord(name, score));
             sortHighScores();
             m_adapter.notifyDataSetChanged();
         }
-    }
+    }*/
 
     void sortHighScores(){
-        Collections.sort(m_highScoreRecords);
+        //Collections.sort(m_highScoreRecords);
     }
 
-    void writeRecords(){
+    /*void writeRecords(){
         try{
             FileOutputStream fos = openFileOutput("highscores2.ser", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -107,9 +104,9 @@ public class HighScoreActivity extends Activity {
         catch(IOException e){
             e.printStackTrace();
         }
-    }
+    }*/
 
-    void readRecords(){
+    /*void readRecords(){
         try{
             FileInputStream fis = openFileInput("highscores2.ser");
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -125,5 +122,5 @@ public class HighScoreActivity extends Activity {
         catch(Exception e){
             e.printStackTrace();
         }
-    }
+    }*/
 }

@@ -37,10 +37,10 @@
             <Button
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:onClick="onOptionsClick"
+                android:onClick="onMovesClick"
                 android:layout_gravity="left"
                 android:textSize="12sp"
-                android:text="@string/options_btn"/>
+                android:text="@string/play_btn"/>
 
         </TableRow>
         <TableRow

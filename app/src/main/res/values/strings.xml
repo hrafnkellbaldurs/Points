@@ -2,6 +2,9 @@
     <string name="app_name">Dots</string>
 
     <string name="play_btn">Play</string>
+    <string name="moves_text">Moves:</string>
+    <string name="high_scores_title">6x6 High Scores</string>
+    <string name="enter_name">Please enter your name:</string>
     <string name="score_text">Score:</string>
     <string name="high_score">High Score</string>
     <string name="action_settings">Settings</string>

@@ -1,6 +1,7 @@
 package com.example.hrafnkell.dots;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,10 @@ public class PlayActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
+
+        Intent intent = getIntent();
+        String mode = intent.getStringExtra("mode");
+
 
         m_bv = (BoardView) findViewById(R.id.boardView);
         scoreView = (TextView) findViewById(R.id.play_score);

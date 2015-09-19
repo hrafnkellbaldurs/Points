@@ -46,6 +46,18 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
+    public void onTimedClick(View view){
+        Intent intent = new Intent(this, PlayActivity.class);
+        intent.putExtra("mode", "timed");
+        startActivity(intent);
+    }
+
+    public void onMovesClick(View view){
+        Intent intent = new Intent(this, PlayActivity.class);;
+        intent.putExtra("mode", "moves");
+        startActivity(intent);
+    }
+
     /**
      * If the High Score button is pressed, we go to that activity
      * @param view The current view

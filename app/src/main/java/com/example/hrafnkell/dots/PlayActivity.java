@@ -84,6 +84,8 @@ public class PlayActivity extends MainActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        Intent intent = new Intent(context, MainActivity.class);
+                        startActivity(intent);
                     }
                 });
 

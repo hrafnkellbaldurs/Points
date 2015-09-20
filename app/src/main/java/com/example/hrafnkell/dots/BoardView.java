@@ -27,7 +27,7 @@ public class BoardView extends View {
     private GameHandler m_gameHandler = null;
 
     /* Constants */
-    private final int INITIAL_MOVES = 2;
+    private final int INITIAL_MOVES = 30;
     // The number of rows and columns of dots
     private final int NUM_DOTS = 6;
     // A lower number equals a bigger touch area

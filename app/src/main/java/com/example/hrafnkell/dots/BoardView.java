@@ -12,7 +12,6 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -49,7 +48,6 @@ public class BoardView extends View {
 
     private int m_score;
     private int m_moves;
-    private TextView scoreView;
 
     private int colorIndex;
 
@@ -112,6 +110,9 @@ public class BoardView extends View {
 
     @Override
     protected void onSizeChanged( int xNew, int yNew, int xOld, int yOld ) {
+
+        m_gameHandler.setView(m_moves, m_score);
+
         int boardWidth = (xNew - getPaddingLeft() - getPaddingRight());
         int boardHeight = (yNew - getPaddingTop() - getPaddingBottom());
         m_cell_width = boardWidth / NUM_DOTS;
@@ -252,9 +253,9 @@ public class BoardView extends View {
                                     // If the index is out of bounds, set it to the last sound
                                     if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
 
-                                    if(sounds[soundIndex].isPlaying()){
+                                    /*if(sounds[soundIndex].isPlaying()){
                                         sounds[soundIndex].stop();
-                                    }
+                                    }*/
                                     sounds[soundIndex].start();
                                 }
                             }

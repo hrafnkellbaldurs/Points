@@ -21,7 +21,6 @@ public class PlayActivity extends MainActivity {
     final Context context = this;
     public TextView scoreView;
     public TextView movesCountView;
-    private final int MOVES = 30;
     BoardView m_bv;
 
     @Override
@@ -32,10 +31,6 @@ public class PlayActivity extends MainActivity {
         m_bv = (BoardView) findViewById(R.id.boardView);
         scoreView = (TextView) findViewById(R.id.play_score);
         movesCountView = (TextView) findViewById(R.id.moves_count);
-
-        scoreView.setText("0");
-
-        movesCountView.setText(String.valueOf(MOVES));
 
         m_bv.setGameHandler(new GameHandler() {
             @Override
@@ -75,7 +70,7 @@ public class PlayActivity extends MainActivity {
                             public void onClick(DialogInterface dialog, int id) {
                                 String name = "";
                                 name = playerName.getText().toString();
-                                db.addHighscore(new HighScore(name, score));
+                                db.addHighscore(new HighScore(name, score, 6));
                                 Intent intent = new Intent(context, HighScoreActivity.class);
                                 startActivity(intent);
 
@@ -84,6 +79,7 @@ public class PlayActivity extends MainActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
+                        db.clearDb();
                         Intent intent = new Intent(context, MainActivity.class);
                         startActivity(intent);
                     }

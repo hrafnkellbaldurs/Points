@@ -9,14 +9,16 @@ public class HighScore implements Comparable<HighScore> {
 
     String _name;
     int _score;
+    int _dotCount;
 
     public HighScore(){
 
     }
 
-    public HighScore(String name, int score){
+    public HighScore(String name, int score, int dotCount){
         this._name = name;
         this._score = score;
+        this._dotCount = dotCount;
     }
 
     @Override
@@ -38,5 +40,13 @@ public class HighScore implements Comparable<HighScore> {
 
     public void setScore(int score){
         this._score = score;
+    }
+
+    public int getDotCount(){
+        return this._dotCount;
+    }
+
+    public void setDotCount(int count){
+        this._dotCount = count;
     }
 }

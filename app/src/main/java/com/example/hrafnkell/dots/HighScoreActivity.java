@@ -36,7 +36,7 @@ public class HighScoreActivity extends MainActivity {
 
     public void onResume(){
         super.onResume();
-        m_highScoreRecords = db.getHighScores();
+        m_highScoreRecords = db.getHighScores(6);
         m_adapter = new HighScoreAdapter(this, m_highScoreRecords);
         m_listView.setAdapter(m_adapter);
     }

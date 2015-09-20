@@ -22,6 +22,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String KEY_NAME = "name";
     private static final String KEY_SCORE = "score";
+    private static final String KEY_DOTCOUNT = "dotcount";
 
     public DatabaseHandler(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,8 +30,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
+
         String CREATE_HIGHSCORES_TABLE = "CREATE TABLE " + TABLE_HIGHSCORES + "("
-                + KEY_NAME + " TEXT," + KEY_SCORE + " INTEGER)";
+                + KEY_NAME + " TEXT," + KEY_SCORE + " INTEGER," + KEY_DOTCOUNT + " INTEGER)";
         db.execSQL(CREATE_HIGHSCORES_TABLE);
     }
 
@@ -47,15 +49,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, highScore.getName());
         values.put(KEY_SCORE, highScore.getScore());
+        values.put(KEY_DOTCOUNT, highScore.getDotCount());
 
         db.insert(TABLE_HIGHSCORES, null, values);
         db.close();
     }
 
-    public ArrayList<HighScore> getHighScores(){
+    public ArrayList<HighScore> getHighScores(int table){
         ArrayList<HighScore> highScoresList = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM " + TABLE_HIGHSCORES;
+        String selectQuery = "";
+        if(table == 6){
+            selectQuery += "SELECT name, score FROM " + TABLE_HIGHSCORES + " WHERE dotcount = 6";
+        }
+        else if(table == 8){
+            selectQuery += "SELECT name, score FROM " + TABLE_HIGHSCORES + " WHERE dotcount = 8";
+        }
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -76,17 +85,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return highScoresList;
     }
 
-    public int getHighScoresCount(){
+    public int getHighScoresCount(int table){
+
         String countQuery = "SELECT * FROM " + TABLE_HIGHSCORES;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
 
-        // return count
         return cursor.getCount();
     }
 
     public void clearDb(){
         SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE "+ TABLE_HIGHSCORES);
+        onCreate(db);
     }
 }

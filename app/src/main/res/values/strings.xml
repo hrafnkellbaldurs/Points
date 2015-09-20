@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Dots</string>
+    <string name="app_name">Points</string>
 
     <string name="play_btn">Play</string>
     <string name="moves_text">Moves:</string>

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff9f7"
+    android:background="#f0e4ca"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="wrap_content"
@@ -62,7 +62,7 @@
         android:id="@+id/boardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#000"
+        android:background="#f0e4ca"
         android:padding="0pt"
         android:layout_margin="10pt"
         android:layout_gravity="center_vertical" />

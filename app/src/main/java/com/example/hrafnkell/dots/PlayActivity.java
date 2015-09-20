@@ -21,6 +21,7 @@ public class PlayActivity extends MainActivity {
     final Context context = this;
     public TextView scoreView;
     public TextView movesCountView;
+    private final int MOVES = 30;
     BoardView m_bv;
 
     @Override
@@ -31,6 +32,8 @@ public class PlayActivity extends MainActivity {
         m_bv = (BoardView) findViewById(R.id.boardView);
         scoreView = (TextView) findViewById(R.id.play_score);
         movesCountView = (TextView) findViewById(R.id.moves_count);
+        
+        m_bv.setVibrator(m_sp.getBoolean("vibrate", false));
 
         m_bv.setGameHandler(new GameHandler() {
             @Override

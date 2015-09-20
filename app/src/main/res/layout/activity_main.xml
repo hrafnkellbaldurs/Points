@@ -7,66 +7,85 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    android:background="#fff9f7"
+    android:background="#f0e4ca"
     tools:context=".MainActivity"
     android:weightSum="1">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="POINTS"
-        android:layout_gravity="center_horizontal"
-        android:textSize="30sp"
-        android:letterSpacing="0.6"/>
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="160dp"
+        android:src="@drawable/logo"
+        android:padding="20dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"/>
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_gravity="end"
+        android:layout_margin="10dp"
         android:stretchColumns="*">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
+            <ImageButton
                 android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="right"
-                android:text="@string/play_btn"
-                android:textSize="12sp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:src="@drawable/play87"
+                android:background="@drawable/play_button"
+                android:paddingLeft="30dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="25dp"
+                android:paddingTop="25dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
                 android:onClick="onPlayClick" />
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:onClick="onMovesClick"
-                android:layout_gravity="left"
-                android:textSize="12sp"
-                android:text="@string/play_btn"/>
 
         </TableRow>
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
 
-            <Button
+            <ImageButton
                 android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:onClick="onOptionsClick"
-                android:layout_gravity="right"
-                android:textSize="12sp"
-                android:text="@string/options_btn"/>
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="left"
-                android:textSize="12sp"
-                android:text="@string/high_score"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
+                android:background="@drawable/high_score_button"
+                android:src="@drawable/trophy36"
+                android:paddingLeft="21dp"
+                android:paddingRight="19dp"
+                android:paddingBottom="18dp"
+                android:paddingTop="22dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
                 android:onClick="onHighScoreClick" />
 
         </TableRow>
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:layout_width="100dp"
+                android:layout_height="90dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="onOptionsClick"
+                android:src="@drawable/gear39"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:background="@drawable/options_button"
+                android:layout_gravity="center" />
+
+        </TableRow>
     </TableLayout>
-
-
-
 
 </LinearLayout>

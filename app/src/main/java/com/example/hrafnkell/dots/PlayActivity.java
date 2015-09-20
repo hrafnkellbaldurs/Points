@@ -90,6 +90,7 @@ public class PlayActivity extends MainActivity {
                                 int boardSize = m_bv.getBoardSize();
                                 db.addHighscore(new HighScore(name, score, boardSize));
                                 Intent intent = new Intent(context, HighScoreActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
 
                             }
@@ -97,8 +98,8 @@ public class PlayActivity extends MainActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.cancel();
-                        db.clearDb();
                         Intent intent = new Intent(context, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 });

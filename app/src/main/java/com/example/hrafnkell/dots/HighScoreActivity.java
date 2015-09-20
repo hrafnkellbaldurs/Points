@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,13 +31,17 @@ public class HighScoreActivity extends MainActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
+        TextView title = (TextView) findViewById(R.id.highscores_title);
+        String bs = m_sp.getString("boardsize", "6");
+        title.setText(bs + "x" + bs + " High Scores");
 
         m_listView = (ListView) findViewById(R.id.highscore_records);
     }
 
     public void onResume(){
         super.onResume();
-        m_highScoreRecords = db.getHighScores(6);
+        int boardSize = Integer.parseInt(m_sp.getString("boardsize", "6"));
+        m_highScoreRecords = db.getHighScores(boardSize);
         m_adapter = new HighScoreAdapter(this, m_highScoreRecords);
         m_listView.setAdapter(m_adapter);
     }

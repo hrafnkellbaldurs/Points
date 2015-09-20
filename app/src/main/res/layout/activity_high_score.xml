@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:background="#f0e4ca">
     <TextView
+        android:id="@+id/highscores_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/high_scores_title"

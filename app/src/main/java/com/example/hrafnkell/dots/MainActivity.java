@@ -24,6 +24,26 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        String clearDb = m_sp.getString("cleardb", "no");
+        if(clearDb.equals("yes")){
+            db.clearDb();
+            m_sp.edit().putString("cleardb", "no").commit();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstance){
+        super.onSaveInstanceState(savedInstance);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -39,6 +59,14 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            try{
+                Intent intent = new Intent(this, OptionsActivity.class);
+                startActivity(intent);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+
             return true;
         }
 

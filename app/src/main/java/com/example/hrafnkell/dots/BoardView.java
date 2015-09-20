@@ -23,8 +23,11 @@ import java.util.Random;
 
 public class BoardView extends View {
 
-    private Vibrator m_vibrator;
+    protected Vibrator m_vibrator;
+    protected long lastSeconds;
+
     private boolean m_use_vibrator = false;
+    private boolean m_soundEnabled = true;
 
     MediaPlayer [] sounds = {new MediaPlayer(), new MediaPlayer(),
             new MediaPlayer(), new MediaPlayer(), new MediaPlayer(), new MediaPlayer()};
@@ -32,9 +35,9 @@ public class BoardView extends View {
     private GameHandler m_gameHandler = null;
 
     /* Constants */
-    private final int INITIAL_MOVES = 30;
+    private final int INITIAL_MOVES = 2;
     // The number of rows and columns of dots
-    private final int NUM_DOTS = 6;
+    private int NUM_DOTS = 6;
     // A lower number equals a bigger touch area
     private final float TOUCH_AREA = 2.0f;
     // A lower number equals a bigger dot
@@ -97,8 +100,6 @@ public class BoardView extends View {
 
         m_score = 0;
         m_moves = INITIAL_MOVES;
-
-        m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         sounds[0] = MediaPlayer.create(getContext(), R.raw.onedot);
         sounds[1] = MediaPlayer.create(getContext(), R.raw.twodot);
@@ -214,10 +215,12 @@ public class BoardView extends View {
                             m_moving = true;
                             m_cellPath.add(new Point(dot.getCol(), dot.getRow()));
                             m_dotsTouched.add(dot);
-                            if(sounds[0].isPlaying()){
-                                sounds[0].stop();
+
+                            // Play sound if enabled
+                            if(m_soundEnabled){
+                                sounds[0].start();
                             }
-                            sounds[0].start();
+
                             m_paintPath.setColor(dot.getPaint().getColor());
                             //dot.getPaint().setColor(Color.BLACK);
                         }
@@ -256,12 +259,17 @@ public class BoardView extends View {
                                 else{
                                     m_cellPath.add(new Point(col, row));
                                     m_dotsTouched.add(dot);
-                                    int soundIndex = m_dotsTouched.size()-1;
 
-                                    // If the index is out of bounds, set it to the last sound
-                                    if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
-                                    
-                                    sounds[soundIndex].start();
+                                    // Play sound if enabled
+                                    if(m_soundEnabled){
+
+                                        int soundIndex = m_dotsTouched.size()-1;
+                                        // If the index is out of bounds, set it to the last sound
+                                        if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
+
+                                        sounds[soundIndex].start();
+
+                                    }
                                 }
                             }
                         }
@@ -273,8 +281,7 @@ public class BoardView extends View {
                 m_moving = false;
 
                 if (m_use_vibrator) {
-                    m_vibrator.vibrate( 500 );
-                    Toast.makeText(getContext(), "Vibrating...", Toast.LENGTH_LONG).show();
+                    m_vibrator.vibrate(100);
                 }
 
                 if(m_dotsTouched.size() > 1) {
@@ -413,12 +420,26 @@ public class BoardView extends View {
         return false;
     }
 
+    public int getBoardSize(){
+        return NUM_DOTS;
+    }
+
     public void setGameHandler(GameHandler handler){
         m_gameHandler = handler;
     }
 
-    public void setVibrator(boolean vibrator){
-        m_use_vibrator = vibrator;
+    public void setBoardSize(int boardSize){
+        NUM_DOTS = boardSize;
+        invalidate();
+    }
+
+    public void setVibrator(Vibrator vibrator, boolean use){
+        m_vibrator = vibrator;
+        m_use_vibrator = use;
+    }
+
+    public void setSound(boolean soundEnabled){
+        m_soundEnabled = soundEnabled;
     }
 
     public void drawDots(Canvas canvas){

@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer-array name="listGridSize">
+    <string-array name="listGridSize">
         <item>6</item>
         <item>8</item>
-    </integer-array>
-    <integer-array name="listGridValues">
+    </string-array>
+    <string-array name="listGridValues">
         <item>6</item>
         <item>8</item>
-    </integer-array>
+    </string-array>
+    <string-array name="listDb">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+    <string-array name="listDbValues">
+        <item>yes</item>
+        <item>no</item>
+    </string-array>
 </resources>

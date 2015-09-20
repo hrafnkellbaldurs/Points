@@ -2,16 +2,27 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <CheckBoxPreference
         android:title="Vibrate on touch"
-        android:summary="Do vibrate when pushing a button"
+        android:summary="Do vibrate"
         android:key="vibrate"
-        android:defaultValue="false">
-    </CheckBoxPreference>
+        android:defaultValue="false"/>
+    <CheckBoxPreference
+        android:title="Sound"
+        android:summary="Play sound when playing"
+        android:key="sound"
+        android:defaultValue="true"/>
     <ListPreference
-        android:title="Size"
-        android:summary="Size of board"
-        android:key="gridSize"
-        android:defaultValue="Green"
+        android:title="Board size"
+        android:summary="6x6 or 8x8"
+        android:key="boardsize"
+        android:defaultValue="6"
         android:entries="@array/listGridSize"
-        android:entryValues="@array/listGridValues">
-    </ListPreference>
+        android:entryValues="@array/listGridValues"/>
+    <ListPreference
+        android:title="Clear highscores"
+        android:summary="Delete all highscore entries"
+        android:key="cleardb"
+        android:defaultValue="no"
+        android:entries="@array/listDb"
+        android:entryValues="@array/listDbValues"/>
+
 </PreferenceScreen>

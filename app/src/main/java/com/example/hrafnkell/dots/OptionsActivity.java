@@ -11,7 +11,6 @@ public class OptionsActivity extends PreferenceActivity {
     @Override
     protected  void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState);
-        //setContentView(R.layout.activity_options);
         addPreferencesFromResource(R.xml.preferences);
 
     }

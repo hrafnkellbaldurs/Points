@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +22,6 @@ public class PlayActivity extends MainActivity {
     final Context context = this;
     public TextView scoreView;
     public TextView movesCountView;
-    private final int MOVES = 30;
     BoardView m_bv;
 
     @Override
@@ -30,10 +30,20 @@ public class PlayActivity extends MainActivity {
         setContentView(R.layout.activity_play);
 
         m_bv = (BoardView) findViewById(R.id.boardView);
+
         scoreView = (TextView) findViewById(R.id.play_score);
         movesCountView = (TextView) findViewById(R.id.moves_count);
-        
-        m_bv.setVibrator(m_sp.getBoolean("vibrate", false));
+
+        int boardSize = Integer.parseInt(m_sp.getString("boardsize", "6"));
+        m_bv.setBoardSize(boardSize);
+
+        Vibrator m_vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        boolean m_use_vibrator = m_sp.getBoolean("vibrate", false);
+        m_bv.setVibrator(m_vibrator, m_use_vibrator);
+
+        boolean soundEnabled = m_sp.getBoolean("sound", true);
+        m_bv.setSound(soundEnabled);
+
 
         m_bv.setGameHandler(new GameHandler() {
             @Override
@@ -49,8 +59,13 @@ public class PlayActivity extends MainActivity {
                 addHighScore(score);
             }
         });
+    }
 
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        int boardSize = Integer.parseInt(m_sp.getString("boardsize", "6"));
+        m_bv.setBoardSize(boardSize);
     }
 
     public void addHighScore(final int score){
@@ -71,9 +86,9 @@ public class PlayActivity extends MainActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                String name = "";
-                                name = playerName.getText().toString();
-                                db.addHighscore(new HighScore(name, score, 6));
+                                String name = playerName.getText().toString();
+                                int boardSize = m_bv.getBoardSize();
+                                db.addHighscore(new HighScore(name, score, boardSize));
                                 Intent intent = new Intent(context, HighScoreActivity.class);
                                 startActivity(intent);
 

@@ -31,6 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
 
+
         String CREATE_HIGHSCORES_TABLE = "CREATE TABLE " + TABLE_HIGHSCORES + "("
                 + KEY_NAME + " TEXT," + KEY_SCORE + " INTEGER," + KEY_DOTCOUNT + " INTEGER)";
         db.execSQL(CREATE_HIGHSCORES_TABLE);

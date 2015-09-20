@@ -37,6 +37,8 @@ public class PlayActivity extends MainActivity {
 
         movesCountView.setText(String.valueOf(MOVES));
 
+        m_bv.setVibrator(m_sp.getBoolean("vibrate", false));
+
         m_bv.setGameHandler(new GameHandler() {
             @Override
             public void setView(int playCount, int score) {

@@ -35,6 +35,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.hrafnkell.dots.MainActivity" />
         </activity>
+        <activity
+            android:name=".OptionsActivity"
+            android:label="@string/title_options"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.hrafnkell.dots.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

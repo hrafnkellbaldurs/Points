@@ -9,10 +9,12 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import java.util.List;
 import java.util.Random;
 
 public class BoardView extends View {
+
+    private Vibrator m_vibrator;
+    private boolean m_use_vibrator = false;
 
     MediaPlayer [] sounds = {new MediaPlayer(), new MediaPlayer(),
             new MediaPlayer(), new MediaPlayer(), new MediaPlayer(), new MediaPlayer()};
@@ -59,7 +64,7 @@ public class BoardView extends View {
     // All paths that the user draws
     private List<Point> m_cellPath = new ArrayList<Point>();
 
-    private List<Dot> m_dotsTouched = new ArrayList<>();
+    private List<Dot> m_dotsTouched = new ArrayList<Dot>();
 
     // Tells us if the user is currently moving his finger on the device screen
     private boolean m_moving = false;
@@ -93,6 +98,8 @@ public class BoardView extends View {
 
         m_score = 0;
         m_moves = INITIAL_MOVES;
+
+        m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         sounds[0] = MediaPlayer.create(getContext(), R.raw.onedot);
         sounds[1] = MediaPlayer.create(getContext(), R.raw.twodot);
@@ -266,6 +273,11 @@ public class BoardView extends View {
             else if( event.getAction() == MotionEvent.ACTION_UP){
                 m_moving = false;
 
+                if (m_use_vibrator) {
+                    m_vibrator.vibrate( 500 );
+                    Toast.makeText(getContext(), "Vibrating...", Toast.LENGTH_LONG).show();
+                }
+
                 if(m_dotsTouched.size() > 1) {
                     m_score += m_dotsTouched.size();
                     m_moves--;
@@ -404,6 +416,10 @@ public class BoardView extends View {
 
     public void setGameHandler(GameHandler handler){
         m_gameHandler = handler;
+    }
+
+    public void setVibrator(boolean vibrator){
+        m_use_vibrator = vibrator;
     }
 
     public void drawDots(Canvas canvas){

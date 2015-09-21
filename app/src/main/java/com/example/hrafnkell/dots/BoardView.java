@@ -23,25 +23,28 @@ import java.util.Random;
 
 public class BoardView extends View {
 
+    //Vibrator Variables
     protected Vibrator m_vibrator;
-    protected long lastSeconds;
-
     private boolean m_use_vibrator = false;
-    private boolean m_soundEnabled = true;
 
+    //Sound variables
+    private boolean m_soundEnabled = true;
     MediaPlayer [] sounds = {new MediaPlayer(), new MediaPlayer(),
             new MediaPlayer(), new MediaPlayer(), new MediaPlayer(), new MediaPlayer()};
 
     private GameHandler m_gameHandler = null;
 
     /* Constants */
-    private final int INITIAL_MOVES = 2;
+
+    //Number of moves available in a single game
+    private final int INITIAL_MOVES = 30;
     // The number of rows and columns of dots
     private int NUM_DOTS = 6;
     // A lower number equals a bigger touch area
     private final float TOUCH_AREA = 2.0f;
     // A lower number equals a bigger dot
     private final float DOT_DRAW_SIZE = 5.0f;
+
     // A selection of colors that a dot can be
     //0=purple
     //1=blue
@@ -70,6 +73,10 @@ public class BoardView extends View {
 
     // Tells us if the user is currently moving his finger on the device screen
     private boolean m_moving = false;
+
+    // Variables for supersquare
+    private boolean touchedDotAgain = false;
+    private boolean m_superSquare = false;
 
     // The width and height of each cell that contains a dot on the grid
     private int m_cell_width;
@@ -155,10 +162,6 @@ public class BoardView extends View {
                     }
                 }
         }
-
-        /* Erase comments for grid */
-        //m_rect.set(0, 0, boardWidth, boardHeight );
-        //m_rect.offset( getPaddingLeft(), getPaddingTop());
     }
 
     @Override
@@ -168,28 +171,16 @@ public class BoardView extends View {
         canvas.drawRect(m_rect, m_paint);
 
         // Draw all of the dots contained in the dots list
-        try{
-            drawDots(canvas);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        drawDots(canvas);
 
         // Draws the path that the user creates
         if( !m_cellPath.isEmpty() ){
             drawPath(canvas);
         }
-
-        //scoreView.setText(String.valueOf(score));
-
-        /* Erase comment for the grid to be drawn */
-        //drawGrid(canvas);
     }
-
 
     @Override
     public boolean onTouchEvent( MotionEvent event ){
-
 
             int x = (int) event.getX();
             int y = (int) event.getY();
@@ -222,7 +213,6 @@ public class BoardView extends View {
                             }
 
                             m_paintPath.setColor(dot.getPaint().getColor());
-                            //dot.getPaint().setColor(Color.BLACK);
                         }
                     }
                 }
@@ -253,12 +243,22 @@ public class BoardView extends View {
                                 // If the dot has been touched, check if the user is
                                 // backtracking/undoing his selection
                                 if(userIsBackTracking(col,row)){
-                                    m_cellPath.remove(m_cellPath.size()-1);
-                                    m_dotsTouched.remove(m_dotsTouched.size()-1);
+                                    if(!touchedDotAgain) {
+                                        m_cellPath.remove(m_cellPath.size() - 1);
+                                        m_dotsTouched.remove(m_dotsTouched.size() - 1);
+                                    }
                                 }
                                 else{
-                                    m_cellPath.add(new Point(col, row));
-                                    m_dotsTouched.add(dot);
+                                    if(m_dotsTouched.contains(dot)){
+                                        touchedDotAgain = true;
+                                        m_cellPath.add(new Point(col, row));
+                                        m_superSquare = true;
+                                    }
+
+                                    if(!touchedDotAgain){
+                                        m_cellPath.add(new Point(col, row));
+                                        m_dotsTouched.add(dot);
+                                    }
 
                                     // Play sound if enabled
                                     if(m_soundEnabled){
@@ -268,7 +268,6 @@ public class BoardView extends View {
                                         if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
 
                                         sounds[soundIndex].start();
-
                                     }
                                 }
                             }
@@ -279,10 +278,19 @@ public class BoardView extends View {
             }
             else if( event.getAction() == MotionEvent.ACTION_UP){
                 m_moving = false;
+                touchedDotAgain = false;
 
-                if (m_use_vibrator) {
+
+                if(m_superSquare){
+                    makeSuperSquare(m_dotsTouched.get(0).getPaint());
+                    if(m_use_vibrator){
+                        m_vibrator.vibrate(500);
+                    }
+                }
+                else if(m_use_vibrator){
                     m_vibrator.vibrate(100);
                 }
+
 
                 if(m_dotsTouched.size() > 1) {
                     m_score += m_dotsTouched.size();
@@ -301,8 +309,20 @@ public class BoardView extends View {
                 m_dotsTouched.clear();
                 invalidate();
             }
-
         return true;
+    }
+
+    public void makeSuperSquare(Paint paint){
+        m_dotsTouched.clear();
+        for(List<Dot> col: m_dots){
+            for(Dot dot : col){
+                if(dot.getPaint().getColor() == paint.getColor()){
+                    m_dotsTouched.add(dot);
+                }
+            }
+        }
+        touchedDotAgain = false;
+        m_superSquare = false;
     }
 
     public void updateBoard(){
@@ -364,7 +384,6 @@ public class BoardView extends View {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -473,11 +492,6 @@ public class BoardView extends View {
                 m_rect.set(x, y, x + m_cell_width, y + m_cell_height);
                 m_rect.offset(getPaddingLeft(), getPaddingTop());
                 canvas.drawRect(m_rect, m_paint);
-
-                //Draw circle
-                //setDotCenter(x,y);
-                //m_grid_circle.offset(getPaddingLeft(), getPaddingTop())
-                //canvas.drawOval(m_circle, m_circle_paint)
             }
         }
     }
@@ -491,16 +505,6 @@ public class BoardView extends View {
         int size = Math.min(width, height);
         setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(),
                 size + getPaddingTop() + getPaddingBottom());
-    }
-
-    void snapToGrid(RectF circle){
-        int col = xToCol((int) circle.left);
-        int row = yToRow((int) circle.top);
-        float x = colToX(col) + (m_cell_width - circle.width())/2;
-        float y = rowToY(row) + (m_cell_height - circle.height())/2.0f;
-        circle.offsetTo(x, y);
-
-        //circle.offsetTo(colToX(col), rowToY(row));
     }
 
     private int xToCol(int x){
@@ -519,46 +523,7 @@ public class BoardView extends View {
     }
 
     private void endGame(){
-       // m_scoreHandler.setView(80085, 80085);
         m_gameHandler.endGame(m_score);
     }
-
-    /*
-    ValueAnimator animator = new ValueAnimator();
-
-    private  void animateMovement (final float xFrom, final float yFrom, final float xTo, final float yTo){
-        animator.removeAllUpdateListeners();
-        animator.setDuration(1000);
-        animator.setFloatValues(0.0f, 1.0f);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float ratio = (float) animation.getAnimatedValue();
-                int x = (int)( (1.0-ratio) * xFrom + ratio * xTo );
-                int y = (int)( (1.0-ratio) * yFrom + ratio * yTo );
-                m_circle.offsetTo( x, y );
-                invalidate();
-            }
-        });
-        animator.start();
-    }*/
-
-     /*public Dot getDotAbove(Dot dot){
-        int dotRow = dot.getRow();
-
-        if(dotRow == 0){
-            Dot newDot = dot;
-            newDot.getPaint().setColor(getRandomColor());
-            newDot.colorIndex = colorIndex;
-            return newDot;
-            //return new Dot(dotX, dotY, dotRow, dotCol, touchSize, dotSize, randColor, colorIndex);
-        }
-        else{
-            Dot newDot = m_dots.get(dot.getCol()).get(dot.getRow()-1);
-
-            return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
-                    dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
-        }
-    }*/
 
 }

@@ -61,27 +61,6 @@ public class Dot {
         this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
         this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
     }
-
-    public int getX(){
-        return this.x;
-    }
-
-    public int getY(){
-        return this.y;
-    }
-
-    public void setCol(int col){
-        this.col = col;
-    }
-
-    public void setRow(int row){
-        this.row = row;
-    }
-
-    public int getCol(){
-        return this.col;
-    }
-
     public int getRow(){
         return this.row;
     }
@@ -91,16 +70,8 @@ public class Dot {
         this.touchAreaRectf.set(x - touchArea, y - touchArea, x + touchArea, y + touchArea);
     }
 
-    public float getTouchSize(){
-        return this.touchArea;
-    }
-
     public RectF getTouchAreaRectf(){
         return this.touchAreaRectf;
-    }
-
-    public void setTouchAreaRectf(float f1, float f2, float f3, float f4){
-        this.touchAreaRectf.set(f1,f2,f3,f4);
     }
 
     public void setDotSize(float size){
@@ -108,23 +79,15 @@ public class Dot {
         this.dotDrawRectf.set(x - dotDrawSize, y - dotDrawSize, x + dotDrawSize, y + dotDrawSize);
     }
 
-    public float getDotDrawSize(){
-        return this.dotDrawSize;
-    }
-
     public RectF getDotDrawRectf(){
         return this.dotDrawRectf;
-    }
-
-    public void setDotDrawRectf(float f1, float f2, float f3, float f4){
-        this.dotDrawRectf.set(f1, f2, f3, f4);
     }
 
     public Paint getPaint(){
         return this.paint;
     }
 
-    public void setPaint(Paint paint){
-        this.paint = paint;
+    public int getCol(){
+        return this.col;
     }
 }

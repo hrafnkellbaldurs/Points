@@ -44,7 +44,6 @@ public class PlayActivity extends MainActivity {
         boolean soundEnabled = m_sp.getBoolean("sound", true);
         m_bv.setSound(soundEnabled);
 
-
         m_bv.setGameHandler(new GameHandler() {
             @Override
             public void setView(int playCount, int score) {
@@ -107,7 +106,6 @@ public class PlayActivity extends MainActivity {
         AlertDialog alertDialog = endGameDialog.create();
 
         alertDialog.show();
-
     }
 
     @Override

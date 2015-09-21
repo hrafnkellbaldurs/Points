@@ -20,7 +20,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         db = new DatabaseHandler(this);
         m_sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-
     }
 
     @Override
@@ -73,16 +72,11 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
     public void onPlayClick(View view){
         Intent intent = new Intent(this, PlayActivity.class);
         startActivity(intent);
     }
 
-    /**
-     * If the High Score button is pressed, we go to that activity
-     * @param view The current view
-     */
     public void onHighScoreClick(View view){
         Intent intent = new Intent(this, HighScoreActivity.class);
         startActivity(intent);

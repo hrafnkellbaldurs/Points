@@ -35,6 +35,8 @@ public class BoardView extends View {
     private GameHandler m_gameHandler = null;
 
     /* Constants */
+
+    //Number of moves available in a single game
     private final int INITIAL_MOVES = 30;
     // The number of rows and columns of dots
     private int NUM_DOTS = 6;
@@ -42,6 +44,7 @@ public class BoardView extends View {
     private final float TOUCH_AREA = 2.0f;
     // A lower number equals a bigger dot
     private final float DOT_DRAW_SIZE = 5.0f;
+
     // A selection of colors that a dot can be
     //0=purple
     //1=blue
@@ -71,6 +74,7 @@ public class BoardView extends View {
     // Tells us if the user is currently moving his finger on the device screen
     private boolean m_moving = false;
 
+    // Variables for supersquare
     private boolean touchedDotAgain = false;
     private boolean m_superSquare = false;
 
@@ -158,10 +162,6 @@ public class BoardView extends View {
                     }
                 }
         }
-
-        /* Erase comments for grid */
-        //m_rect.set(0, 0, boardWidth, boardHeight );
-        //m_rect.offset( getPaddingLeft(), getPaddingTop());
     }
 
     @Override
@@ -171,28 +171,16 @@ public class BoardView extends View {
         canvas.drawRect(m_rect, m_paint);
 
         // Draw all of the dots contained in the dots list
-        try{
-            drawDots(canvas);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        drawDots(canvas);
 
         // Draws the path that the user creates
         if( !m_cellPath.isEmpty() ){
             drawPath(canvas);
         }
-
-        //scoreView.setText(String.valueOf(score));
-
-        /* Erase comment for the grid to be drawn */
-        //drawGrid(canvas);
     }
-
 
     @Override
     public boolean onTouchEvent( MotionEvent event ){
-
 
             int x = (int) event.getX();
             int y = (int) event.getY();
@@ -225,7 +213,6 @@ public class BoardView extends View {
                             }
 
                             m_paintPath.setColor(dot.getPaint().getColor());
-                            //dot.getPaint().setColor(Color.BLACK);
                         }
                     }
                 }
@@ -281,7 +268,6 @@ public class BoardView extends View {
                                         if(soundIndex > sounds.length-1) soundIndex = sounds.length-1;
 
                                         sounds[soundIndex].start();
-
                                     }
                                 }
                             }
@@ -321,7 +307,6 @@ public class BoardView extends View {
                 m_dotsTouched.clear();
                 invalidate();
             }
-
         return true;
     }
 
@@ -397,7 +382,6 @@ public class BoardView extends View {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -496,26 +480,6 @@ public class BoardView extends View {
         canvas.drawPath( m_path, m_paintPath);
     }
 
-    public void drawGrid(Canvas canvas){
-        for(int row = 0; row < NUM_DOTS; ++row){
-            for(int col = 0; col < NUM_DOTS; ++col){
-
-                int x = col * m_cell_width;
-                int y = row * m_cell_height;
-
-                //Grid
-                m_rect.set(x, y, x + m_cell_width, y + m_cell_height);
-                m_rect.offset(getPaddingLeft(), getPaddingTop());
-                canvas.drawRect(m_rect, m_paint);
-
-                //Draw circle
-                //setDotCenter(x,y);
-                //m_grid_circle.offset(getPaddingLeft(), getPaddingTop())
-                //canvas.drawOval(m_circle, m_circle_paint)
-            }
-        }
-    }
-
     @Override
     protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -525,16 +489,6 @@ public class BoardView extends View {
         int size = Math.min(width, height);
         setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(),
                 size + getPaddingTop() + getPaddingBottom());
-    }
-
-    void snapToGrid(RectF circle){
-        int col = xToCol((int) circle.left);
-        int row = yToRow((int) circle.top);
-        float x = colToX(col) + (m_cell_width - circle.width())/2;
-        float y = rowToY(row) + (m_cell_height - circle.height())/2.0f;
-        circle.offsetTo(x, y);
-
-        //circle.offsetTo(colToX(col), rowToY(row));
     }
 
     private int xToCol(int x){
@@ -553,46 +507,7 @@ public class BoardView extends View {
     }
 
     private void endGame(){
-       // m_scoreHandler.setView(80085, 80085);
         m_gameHandler.endGame(m_score);
     }
-
-    /*
-    ValueAnimator animator = new ValueAnimator();
-
-    private  void animateMovement (final float xFrom, final float yFrom, final float xTo, final float yTo){
-        animator.removeAllUpdateListeners();
-        animator.setDuration(1000);
-        animator.setFloatValues(0.0f, 1.0f);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float ratio = (float) animation.getAnimatedValue();
-                int x = (int)( (1.0-ratio) * xFrom + ratio * xTo );
-                int y = (int)( (1.0-ratio) * yFrom + ratio * yTo );
-                m_circle.offsetTo( x, y );
-                invalidate();
-            }
-        });
-        animator.start();
-    }*/
-
-     /*public Dot getDotAbove(Dot dot){
-        int dotRow = dot.getRow();
-
-        if(dotRow == 0){
-            Dot newDot = dot;
-            newDot.getPaint().setColor(getRandomColor());
-            newDot.colorIndex = colorIndex;
-            return newDot;
-            //return new Dot(dotX, dotY, dotRow, dotCol, touchSize, dotSize, randColor, colorIndex);
-        }
-        else{
-            Dot newDot = m_dots.get(dot.getCol()).get(dot.getRow()-1);
-
-            return new Dot(dot.getX(), dot.getY(), dot.getRow(), dot.getCol(), dot.getTouchSize(),
-                    dot.getDotDrawSize(), newDot.getPaint().getColor(), newDot.colorIndex);
-        }
-    }*/
 
 }

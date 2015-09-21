@@ -45,8 +45,4 @@ public class HighScore implements Comparable<HighScore> {
     public int getDotCount(){
         return this._dotCount;
     }
-
-    public void setDotCount(int count){
-        this._dotCount = count;
-    }
 }

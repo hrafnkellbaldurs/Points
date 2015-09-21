@@ -30,8 +30,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db){
-
-
         String CREATE_HIGHSCORES_TABLE = "CREATE TABLE " + TABLE_HIGHSCORES + "("
                 + KEY_NAME + " TEXT," + KEY_SCORE + " INTEGER," + KEY_DOTCOUNT + " INTEGER)";
         db.execSQL(CREATE_HIGHSCORES_TABLE);
@@ -84,16 +82,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Collections.sort(highScoresList);
 
         return highScoresList;
-    }
-
-    public int getHighScoresCount(int table){
-
-        String countQuery = "SELECT * FROM " + TABLE_HIGHSCORES;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(countQuery, null);
-        cursor.close();
-
-        return cursor.getCount();
     }
 
     public void clearDb(){

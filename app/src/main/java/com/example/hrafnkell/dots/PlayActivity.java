@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.text.InputType;
@@ -29,10 +30,18 @@ public class PlayActivity extends MainActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
+        Typeface font = Typeface.createFromAsset(getAssets(), "Fonts/Biko_Regular.otf");
+
         m_bv = (BoardView) findViewById(R.id.boardView);
 
         scoreView = (TextView) findViewById(R.id.play_score);
         movesCountView = (TextView) findViewById(R.id.moves_count);
+        TextView movesCountText = (TextView) findViewById(R.id.moves_count_text);
+        TextView playScoreText = (TextView) findViewById(R.id.play_score_text);
+        scoreView.setTypeface(font);
+        movesCountView.setTypeface(font);
+        movesCountText.setTypeface(font);
+        playScoreText.setTypeface(font);
 
         int boardSize = Integer.parseInt(m_sp.getString("boardsize", "6"));
         m_bv.setBoardSize(boardSize);

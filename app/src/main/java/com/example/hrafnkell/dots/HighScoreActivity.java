@@ -3,6 +3,7 @@ package com.example.hrafnkell.dots;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,10 +30,13 @@ public class HighScoreActivity extends MainActivity {
 
     HighScoreAdapter m_adapter;
 
+    Typeface font;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_score);
+
         TextView title = (TextView) findViewById(R.id.highscores_title);
         String bs = m_sp.getString("boardsize", "6");
         title.setText(bs + "x" + bs + " High Scores");

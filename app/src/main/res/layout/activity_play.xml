@@ -7,7 +7,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -17,10 +18,11 @@
 
             <TextView
                 android:text="@string/moves_text"
+                android:id="@+id/moves_count_text"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10pt"
+                android:layout_marginLeft="30pt"
                 android:layout_marginTop="10pt"/>
             <TextView
                 android:id="@+id/moves_count"
@@ -40,10 +42,11 @@
 
             <TextView
                 android:text="@string/score_text"
+                android:id="@+id/play_score_text"
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10pt"
+                android:layout_marginLeft="30pt"
                 android:layout_marginTop="10pt"/>
             <TextView
                 android:id="@+id/play_score"
@@ -64,7 +67,10 @@
         android:layout_height="wrap_content"
         android:background="#f0e4ca"
         android:padding="0pt"
-        android:layout_margin="10pt"
+        android:layout_marginBottom="10pt"
+        android:layout_marginTop="30pt"
+        android:layout_marginLeft="10pt"
+        android:layout_marginRight="10pt"
         android:layout_gravity="center_vertical" />
 
 </LinearLayout>

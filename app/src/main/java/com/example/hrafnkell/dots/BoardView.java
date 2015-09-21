@@ -253,6 +253,9 @@ public class BoardView extends View {
                                         touchedDotAgain = true;
                                         m_cellPath.add(new Point(col, row));
                                         m_superSquare = true;
+                                        if(m_use_vibrator){
+                                            m_vibrator.vibrate(500);
+                                        }
                                     }
 
                                     if(!touchedDotAgain){
@@ -281,9 +284,6 @@ public class BoardView extends View {
 
                 if(m_superSquare){
                     makeSuperSquare(m_dotsTouched.get(0).getPaint());
-                    if(m_use_vibrator){
-                        m_vibrator.vibrate(500);
-                    }
                 }
                 else if(m_use_vibrator){
                     m_vibrator.vibrate(100);
